@@ -1,0 +1,13 @@
+{
+  "apps": [{
+    "name": "betpro-api",
+    "script": "index.js",
+    "cwd": "/var/www/betpro/server",
+    "instances": "max",
+    "exec_mode": "cluster",
+    "env": {
+      "NODE_ENV": "production",
+      "PORT": 3001
+    }
+  }]
+}
