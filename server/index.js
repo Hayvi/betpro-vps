@@ -12,6 +12,7 @@ import withdrawalRoutes from './routes/withdrawals.js';
 import presenceRoutes from './routes/presence.js';
 import rbacRoutes from './routes/rbac.js';
 import walletRoutes from './routes/wallet.js';
+import geoipRoutes from './routes/geoip.js';
 
 const app = express();
 const server = createServer(app);
@@ -28,6 +29,7 @@ app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/presence', presenceRoutes);
 app.use('/api/rbac', rbacRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/geoip', geoipRoutes);
 
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));

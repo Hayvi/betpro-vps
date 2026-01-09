@@ -74,6 +74,9 @@ export const api = {
     credit: (targetUsername, amount) => request('/wallet/credit', { method: 'POST', body: JSON.stringify({ targetUsername, amount }) }),
     debit: (targetUsername, amount) => request('/wallet/debit', { method: 'POST', body: JSON.stringify({ targetUsername, amount }) }),
   },
+  geoip: {
+    get: () => request('/geoip'),
+  },
 };
 
 // Legacy apiService for compatibility with existing hooks
