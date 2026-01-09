@@ -3,7 +3,7 @@ import { api } from '@/services/apiClient';
 export async function fetchMyBalance() {
   try {
     const data = await api.wallet.balance();
-    return { balance: data.balance || 0, username: data.username || null, error: null };
+    return { balance: Number(data.balance) || 0, username: data.username || null, error: null };
   } catch {
     return { balance: 0, username: null, error: 'unexpected_error' };
   }

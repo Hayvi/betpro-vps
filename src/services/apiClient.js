@@ -75,3 +75,19 @@ export const api = {
     debit: (targetUsername, amount) => request('/wallet/debit', { method: 'POST', body: JSON.stringify({ targetUsername, amount }) }),
   },
 };
+
+// Legacy apiService for compatibility with existing hooks
+export const apiService = {
+  home: {
+    getGames: () => Promise.resolve([]),
+    getPromotions: () => Promise.resolve([]),
+    getTopWins: () => Promise.resolve([]),
+  },
+  sports: {
+    getMatches: () => Promise.resolve([]),
+    getSports: () => Promise.resolve([]),
+  },
+  bets: {
+    place: (data) => api.bets.place(data),
+  },
+};

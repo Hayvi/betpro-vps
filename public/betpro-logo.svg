@@ -1,0 +1,100 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Modern gradient - deep blue to cyan -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="50%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    
+    <!-- Neon cyan glow -->
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="50%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    
+    <!-- Neon emerald accent -->
+    <linearGradient id="neonEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#34d399"/>
+    </linearGradient>
+    
+    <!-- Glass effect gradient -->
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.15)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0.02)"/>
+    </linearGradient>
+    
+    <!-- Glow filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle with glass effect -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGrad)" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="90" fill="url(#glassGrad)"/>
+  
+  <!-- Outer ring - neon cyan -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="url(#neonCyan)" stroke-width="2" opacity="0.8" filter="url(#glow)"/>
+  
+  <!-- Inner decorative ring -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <circle cx="100" cy="100" r="75" fill="none" stroke="url(#neonCyan)" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Tech circuit lines -->
+  <g stroke="url(#neonCyan)" stroke-width="1" opacity="0.4" filter="url(#glow)">
+    <line x1="30" y1="100" x2="55" y2="100"/>
+    <line x1="145" y1="100" x2="170" y2="100"/>
+    <line x1="100" y1="30" x2="100" y2="50"/>
+    <line x1="100" y1="150" x2="100" y2="170"/>
+    <circle cx="55" cy="100" r="2" fill="#22d3ee"/>
+    <circle cx="145" cy="100" r="2" fill="#22d3ee"/>
+    <circle cx="100" cy="50" r="2" fill="#22d3ee"/>
+    <circle cx="100" cy="150" r="2" fill="#22d3ee"/>
+  </g>
+  
+  <!-- Main "B" letter - modern geometric style -->
+  <g filter="url(#strongGlow)">
+    <!-- B vertical bar -->
+    <rect x="60" y="60" width="16" height="80" rx="3" fill="url(#neonCyan)"/>
+    
+    <!-- B top curve -->
+    <path d="M 76 60 L 105 60 Q 125 60 125 78 Q 125 95 105 95 L 76 95" 
+          fill="none" stroke="url(#neonCyan)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- B bottom curve -->
+    <path d="M 76 105 L 110 105 Q 135 105 135 122 Q 135 140 110 140 L 76 140" 
+          fill="none" stroke="url(#neonEmerald)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Accent dot -->
+  <circle cx="145" cy="135" r="8" fill="url(#neonEmerald)" filter="url(#glow)"/>
+  
+  <!-- Small tech details -->
+  <g fill="url(#neonCyan)" opacity="0.6">
+    <rect x="40" y="55" width="8" height="2" rx="1"/>
+    <rect x="40" y="60" width="5" height="2" rx="1"/>
+    <rect x="152" y="138" width="8" height="2" rx="1"/>
+    <rect x="155" y="143" width="5" height="2" rx="1"/>
+  </g>
+</svg>
