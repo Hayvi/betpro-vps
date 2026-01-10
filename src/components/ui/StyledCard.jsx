@@ -6,7 +6,7 @@ const StyledCard = forwardRef(({ className, children, ...props }, ref) => {
     <div
       ref={ref}
       className={cn(
-        "relative rounded-xl border p-4 md:p-5 overflow-hidden ui-trans-fast",
+        "relative rounded-xl border p-4 md:p-5 ui-trans-fast",
         // Light mode: Clean white with subtle border
         "bg-white border-slate-200",
         // Dark mode: Deep solid slate with subtle gold border accent
