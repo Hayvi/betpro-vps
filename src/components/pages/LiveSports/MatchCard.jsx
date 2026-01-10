@@ -2,12 +2,9 @@ import { Zap, Clock } from '@/components/ui/BrandIcons';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { OddsSection } from './OddsSection';
-import { useTeamLogo } from '@/hooks/useTeamLogo';
 import { useI18n } from '@/contexts/I18nContext';
 
 export function MatchCard({ match, animatedOdds = {}, onOddsClick, getSportIcon, onShowAllMarkets }) {
-  const { logo: homeLogo } = useTeamLogo(match?.home?.name);
-  const { logo: awayLogo } = useTeamLogo(match?.away?.name);
   const { t } = useI18n();
 
   if (!match) return null;
@@ -45,18 +42,7 @@ export function MatchCard({ match, animatedOdds = {}, onOddsClick, getSportIcon,
         <div className="flex items-center justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              {homeLogo ? (
-                <img 
-                  src={homeLogo} 
-                  alt="" 
-                  className="w-6 h-6 object-contain"
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                />
-              ) : null}
-              <div 
-                className="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs text-slate-400"
-                style={{ display: homeLogo ? 'none' : 'flex' }}
-              >
+              <div className="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs text-slate-400">
                 {match.home.name?.charAt(0)}
               </div>
               <span className="text-white font-bold text-lg">{match.home.name}</span>
@@ -67,18 +53,7 @@ export function MatchCard({ match, animatedOdds = {}, onOddsClick, getSportIcon,
               )}
             </div>
             <div className="flex items-center gap-2">
-              {awayLogo ? (
-                <img 
-                  src={awayLogo} 
-                  alt="" 
-                  className="w-6 h-6 object-contain"
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                />
-              ) : null}
-              <div 
-                className="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs text-slate-400"
-                style={{ display: awayLogo ? 'none' : 'flex' }}
-              >
+              <div className="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs text-slate-400">
                 {match.away.name?.charAt(0)}
               </div>
               <span className="text-white font-bold text-lg">{match.away.name}</span>

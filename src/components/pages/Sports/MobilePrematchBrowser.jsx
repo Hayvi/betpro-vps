@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft } from '@/components/ui/BrandIcons';
 import { cn } from '@/lib/utils';
-import { useLeagueLogo } from '@/hooks/useLeagueLogo';
 import { Badge } from '@/components/ui/badge';
 import { OddsHeader } from './OddsHeader';
 import { MatchesList } from './MatchesList';
@@ -9,8 +8,6 @@ import { LoadingState, ErrorState, EmptyState, EventMarketsViewCompact } from '@
 import { useI18n } from '@/contexts/I18nContext';
 
 function LeagueRow({ league, isDark, onSelect }) {
-  const logo = useLeagueLogo(league?.id);
-
   return (
     <button
       type="button"
@@ -33,11 +30,7 @@ function LeagueRow({ league, isDark, onSelect }) {
       />
       <div className="relative flex items-center gap-3 min-w-0">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 flex items-center justify-center overflow-hidden ring-1 ring-cyan-500/20">
-          {logo ? (
-            <img src={logo} alt="" className="w-6 h-6 object-contain" />
-          ) : (
-            <span className="text-sm">🏆</span>
-          )}
+          <span className="text-sm">🏆</span>
         </div>
         <span className={cn('font-semibold truncate tracking-tight', isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-slate-900')}>
           {league?.name}

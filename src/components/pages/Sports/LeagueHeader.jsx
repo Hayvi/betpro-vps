@@ -1,19 +1,15 @@
 import { Star } from '@/components/ui/BrandIcons';
 import { cn } from '@/lib/utils';
-import { useLeagueLogo } from '@/hooks/useLeagueLogo';
 
 /**
  * LeagueHeader Component
- * Displays league name and date header with logo
+ * Displays league name and date header
  * 
  * @param {Object} props
  * @param {string} props.leagueName - Name of the league
- * @param {string} props.leagueKey - League key for fetching logo
  * @param {boolean} props.isDark - Whether dark theme is active
  */
-export function LeagueHeader({ leagueName = '', leagueKey = '', isDark = true }) {
-  const logo = useLeagueLogo(leagueKey);
-
+export function LeagueHeader({ leagueName = '', isDark = true }) {
   if (!leagueName) return null;
 
   return (
@@ -31,11 +27,7 @@ export function LeagueHeader({ leagueName = '', leagueKey = '', isDark = true })
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.06] via-white/[0.02] to-black/[0.15] opacity-100"
       />
       <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500/30 to-emerald-500/30 flex items-center justify-center overflow-hidden ring-2 ring-cyan-500/30 shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
-        {logo ? (
-          <img src={logo} alt={leagueName} className="w-9 h-9 object-contain" />
-        ) : (
-          <Star className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
-        )}
+        <Star className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
       </div>
       <div className="relative flex-1 min-w-0">
         <h2 className={cn(

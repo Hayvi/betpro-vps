@@ -10,11 +10,8 @@ const MAX_STORAGE_USAGE = 5 * 1024 * 1024; // 5MB absolute max
 
 // Known cache keys and their priorities (lower number = higher priority)
 const CACHE_PRIORITIES = {
-  'betpro_team_logos': 1,           // High priority - user experience
-  'betpro_league_logos': 2,         // High priority - user experience  
-  'betpro_team_logo_misses_v3': 3,  // Medium priority - performance
-  'betpro_betslip': 4,              // Medium priority - user data
-  'betpro_user_preferences': 5,     // Low priority - convenience
+  'betpro_betslip': 1,              // High priority - user data
+  'betpro_user_preferences': 2,     // Medium priority - convenience
   'betpro_version_check': 10,       // Lowest priority - can be regenerated
 };
 

@@ -2,12 +2,9 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp } from '@/components/ui/BrandIcons';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useLeagueLogo } from '@/hooks/useLeagueLogo';
 import { useI18n } from '@/contexts/I18nContext';
 
 function MobileLeagueButton({ league, isSelected, isDark, onSelect }) {
-  const logo = useLeagueLogo(league.id);
-
   return (
     <button
       type="button"
@@ -22,11 +19,7 @@ function MobileLeagueButton({ league, isSelected, isDark, onSelect }) {
       )}
     >
       <div className="flex items-center gap-2">
-        {logo ? (
-          <img src={logo} alt="" className="w-4 h-4 object-contain" />
-        ) : (
-          <span className="text-sm">{league.icon}</span>
-        )}
+        <span className="text-sm">{league.icon}</span>
         <span className="truncate">{league.name}</span>
       </div>
       <Badge variant="secondary" className="bg-slate-700/50 text-[10px]">

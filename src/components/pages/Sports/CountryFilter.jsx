@@ -1,11 +1,8 @@
 import { ChevronDown, ChevronUp } from '@/components/ui/BrandIcons';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useLeagueLogo } from '@/hooks/useLeagueLogo';
 
 function LeagueButton({ league, isSelected, isDark, onSelect }) {
-  const logo = useLeagueLogo(league.id);
-
   return (
     <button
       onClick={() => onSelect(league)}
@@ -29,11 +26,7 @@ function LeagueButton({ league, isSelected, isDark, onSelect }) {
       />
       <div className="relative flex items-center gap-3 min-w-0">
         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500/15 to-emerald-500/15 flex items-center justify-center overflow-hidden ring-1 ring-cyan-500/20">
-          {logo ? (
-            <img src={logo} alt="" className="w-4 h-4 object-contain" />
-          ) : (
-            <span className="text-xs">{league.icon || '🏆'}</span>
-          )}
+          <span className="text-xs">{league.icon || '🏆'}</span>
         </div>
         <span className={cn('font-medium truncate tracking-tight', isSelected ? 'font-semibold' : '')}>
           {league.name}

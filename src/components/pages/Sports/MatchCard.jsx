@@ -3,8 +3,6 @@ import { ChevronRight, MoreHorizontal, Clock } from '@/components/ui/BrandIcons'
 import { StyledButton } from '@/components/ui/StyledButton';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { cn } from '@/lib/utils';
-import { useMatchLogos } from '@/hooks/useTeamLogo';
-import { invalidateCachedLogo } from '@/services/teamLogoService';
 import { useBet } from '@/contexts/BetContext';
 
 function buildCountdownParts(commenceTime, nowTs) {
@@ -40,50 +38,23 @@ function formatCountdown(countdownParts) {
   return null;
 }
 
-function TeamLogo({ logo, teamName, size = 'sm' }) {
+function TeamLogo({ teamName, size = 'sm' }) {
   const sizeClass = size === 'sm' ? 'w-5 h-5' : 'w-6 h-6';
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    setFailed(false);
-  }, [logo, teamName]);
-
-  if (!logo || failed) {
-    return (
-      <div
-        className={cn(
-          sizeClass,
-          'rounded-full bg-slate-800/60 ring-1 ring-white/10 flex items-center justify-center text-xs font-semibold text-slate-300'
-        )}
-      >
-        {teamName?.charAt(0) || '?'}
-      </div>
-    );
-  }
 
   return (
-    <img
-      src={logo}
-      alt={teamName}
-      className={cn(sizeClass, 'rounded-full object-contain bg-white/10')}
-      onError={(e) => {
-        invalidateCachedLogo(teamName);
-        setFailed(true);
-      }}
-    />
+    <div
+      className={cn(
+        sizeClass,
+        'rounded-full bg-slate-800/60 ring-1 ring-white/10 flex items-center justify-center text-xs font-semibold text-slate-300'
+      )}
+    >
+      {teamName?.charAt(0) || '?'}
+    </div>
   );
 }
 
 export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true }) {
   const { bets } = useBet();
-  const sportKey = match?.sportKey;
-  const logosEnabled =
-    typeof sportKey !== 'string'
-      ? true
-      : sportKey === 'soccer'
-      || sportKey.startsWith('soccer_')
-      || sportKey === 'basketball_nba';
-  const { homeLogo, awayLogo } = useMatchLogos(match?.home?.name, match?.away?.name, { enabled: logosEnabled });
 
   const [nowTs, setNowTs] = useState(() => Date.now());
 
@@ -262,7 +233,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
           {/* Home Team */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
-              <TeamLogo logo={homeLogo} teamName={match.home.name} />
+              <TeamLogo teamName={match.home.name} />
               <span className={cn('font-bold text-sm truncate tracking-tight', isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-slate-900')}>
                 {match.home.name}
               </span>
@@ -298,7 +269,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
           {/* Away Team */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
-              <TeamLogo logo={awayLogo} teamName={match.away.name} />
+              <TeamLogo teamName={match.away.name} />
               <span className={cn('font-bold text-sm truncate tracking-tight', isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-slate-900')}>
                 {match.away.name}
               </span>
@@ -444,7 +415,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
                   </div>
                 )}
                 <div className="flex items-center gap-2">
-                  <TeamLogo logo={homeLogo} teamName={match.home.name} />
+                  <TeamLogo teamName={match.home.name} />
                   <p className={cn('font-bold text-sm tracking-tight truncate', isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-slate-900')}>
                     {match.home.name}
                   </p>
@@ -455,7 +426,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <TeamLogo logo={awayLogo} teamName={match.away.name} />
+                  <TeamLogo teamName={match.away.name} />
                   <p className={cn('font-bold text-sm tracking-tight truncate', isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-slate-900')}>
                     {match.away.name}
                   </p>
