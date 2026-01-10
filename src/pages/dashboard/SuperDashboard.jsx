@@ -713,21 +713,24 @@ export default function SuperDashboard() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="dash-section-title">{t('dash_deletedUsersTitle')}</h2>
             <div className="h-0.5 flex-1 bg-gradient-to-r from-violet-500/20 to-transparent ml-4" />
-            <div className="flex items-center gap-2 relative z-20">
-              <div className="p-1.5 rounded-lg bg-slate-500/10 border border-slate-500/20">
-                <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
-              </div>
-              <button
-                type="button"
-                onClick={() => setDeletedUsersCollapsed((v) => !v)}
-                aria-expanded={!deletedUsersCollapsed}
-                className="dash-collapse-btn"
-              >
-                {deletedUsersCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-              </button>
+          <div className="flex items-center gap-2 relative z-20">
+            <div className="p-1.5 rounded-lg bg-slate-500/10 border border-slate-500/20">
+              <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              </svg>
             </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                console.log('Deleted Users button clicked', e.target);
+                setDeletedUsersCollapsed((v) => !v);
+              }}
+              aria-expanded={!deletedUsersCollapsed}
+              className="dash-collapse-btn"
+            >
+              {deletedUsersCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            </button>
+          </div>
           </div>
 
           <div ref={inactiveSectionRef} />
@@ -829,7 +832,10 @@ export default function SuperDashboard() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setCreateUserCollapsed((v) => !v)}
+                  onClick={(e) => {
+                    console.log('Create User button clicked', e.target);
+                    setCreateUserCollapsed((v) => !v);
+                  }}
                   aria-expanded={!createUserCollapsed}
                   className="dash-collapse-btn"
                 >
