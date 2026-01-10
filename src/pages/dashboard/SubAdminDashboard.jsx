@@ -260,7 +260,7 @@ export default function SubAdminDashboard() {
         <div className="dash-section-header">
           <h2 className="dash-section-title">{t('dash_debitUserTitle')}</h2>
           <div className="dash-section-rule" />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 relative z-20">
             <div className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
               <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -361,7 +361,7 @@ export default function SubAdminDashboard() {
             className="dash-mobile-card ui-trans-fast hover:border-amber-500/20 dark:hover:border-amber-500/20 group"
           >
             <div className="flex items-center justify-between relative z-10">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <span className="font-black tracking-tight text-slate-900 dark:text-white">{u.username}</span>
                 <CopyIconButton value={u.username} />
               </div>
@@ -390,7 +390,7 @@ export default function SubAdminDashboard() {
             className="border-b border-slate-800/30 hover:bg-white/[0.02] transition-colors group"
           >
             <td className="py-3 px-3 border-r border-slate-200/70 dark:border-slate-800/60 whitespace-nowrap">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <span className="font-black tracking-tight text-slate-900 dark:text-white group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{u.username}</span>
                 <CopyIconButton value={u.username} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -422,7 +422,7 @@ export default function SubAdminDashboard() {
             <div className="dash-section-header">
               <h2 className="dash-section-title">{t('dash_createUserTitle')}</h2>
               <div className="dash-section-rule" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <div className="p-1.5 rounded-lg bg-green-500/10 border border-green-500/20">
                   <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />

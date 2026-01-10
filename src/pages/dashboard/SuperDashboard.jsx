@@ -383,7 +383,7 @@ export default function SuperDashboard() {
             <div className="dash-section-header">
               <h2 className="dash-section-title">{t('dash_debitUserTitle')}</h2>
               <div className="dash-section-rule" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <div className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
                   <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -503,7 +503,7 @@ export default function SuperDashboard() {
               className="bg-slate-900/30 backdrop-blur-md rounded-2xl p-4 space-y-3 text-sm border border-slate-800/80 hover:border-violet-500/30 transition-all group/user"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative z-20">
                   <div className="w-8 h-8 rounded-full bg-violet-500/10 flex items-center justify-center text-violet-400 font-bold">
                     {u.username[0].toUpperCase()}
                   </div>
@@ -555,7 +555,7 @@ export default function SuperDashboard() {
               )}
             >
               <td className="py-3 px-4 border-r border-slate-800/60 whitespace-nowrap">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative z-20">
                   <div className="w-7 h-7 rounded-lg bg-violet-500/10 flex items-center justify-center text-[10px] text-violet-400 font-black">
                     {u.username[0].toUpperCase()}
                   </div>
@@ -713,7 +713,7 @@ export default function SuperDashboard() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="dash-section-title">{t('dash_deletedUsersTitle')}</h2>
             <div className="h-0.5 flex-1 bg-gradient-to-r from-violet-500/20 to-transparent ml-4" />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative z-20">
               <div className="p-1.5 rounded-lg bg-slate-500/10 border border-slate-500/20">
                 <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
@@ -821,7 +821,7 @@ export default function SuperDashboard() {
             <div className="dash-section-header">
               <h2 className="dash-section-title">{t('dash_createUserTitle')}</h2>
               <div className="dash-section-rule" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <div className="p-1.5 rounded-lg bg-green-500/10 border border-green-500/20">
                   <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -889,7 +889,7 @@ export default function SuperDashboard() {
           <div className="dash-section-header">
             <h2 className="dash-section-title">{t('dash_resetPasswordTitle')}</h2>
             <div className="dash-section-rule" />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative z-20">
               <div className="p-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20">
                 <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />

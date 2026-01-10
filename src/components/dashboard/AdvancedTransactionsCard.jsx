@@ -28,7 +28,7 @@ export function AdvancedTransactionsCard({
       <div className="dash-section-header">
         <h2 className="dash-section-title">{resolvedTitle}</h2>
         <div className="dash-section-rule" />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative z-20">
           <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
             <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />

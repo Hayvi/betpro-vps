@@ -323,7 +323,7 @@ export default function AdminDashboard() {
             <div className="dash-section-header">
               <h2 className="dash-section-title">{t('dash_debitUserTitle')}</h2>
               <div className="dash-section-rule" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <div className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
                   <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -442,7 +442,7 @@ export default function AdminDashboard() {
             >
               <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 blur-2xl rounded-full -mr-8 -mt-8" />
               <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative z-20">
                   <span className="font-black tracking-tight text-white">{u.username}</span>
                   <CopyIconButton value={u.username} />
                 </div>
@@ -480,7 +480,7 @@ export default function AdminDashboard() {
               className="border-b border-slate-800/30 hover:bg-white/[0.02] transition-colors group"
             >
               <td className="py-3 px-3 border-r border-slate-800/60 whitespace-nowrap">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative z-20">
                   <span className="font-black tracking-tight text-white/80 group-hover:text-white transition-colors">{u.username}</span>
                   <CopyIconButton value={u.username} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
@@ -619,7 +619,7 @@ export default function AdminDashboard() {
             <div className="dash-section-header">
               <h2 className="dash-section-title">{t('dash_createUserTitle')}</h2>
               <div className="dash-section-rule" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-20">
                 <div className="p-1.5 rounded-lg bg-green-500/10 border border-green-500/20">
                   <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />

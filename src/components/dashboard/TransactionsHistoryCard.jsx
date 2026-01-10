@@ -27,7 +27,7 @@ export function TransactionsHistoryCard({
       <div className="dash-section-header">
         <h2 className="dash-section-title">{resolvedTitle}</h2>
         <div className="dash-section-rule" />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative z-20">
           <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
             <svg className="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
