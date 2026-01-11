@@ -78,6 +78,7 @@ router.post('/transfer', async (req, res) => {
     // Broadcast transaction to both parties
     const tx = txRes.rows[0];
     broadcast(req.user.userId, { type: 'transaction', data: tx });
+    broadcast(req.user.userId, { type: 'users_update' });
     broadcast(receiverId, { type: 'transaction', data: tx });
     
     res.json({ success: true });
@@ -125,6 +126,7 @@ router.post('/credit', requireRole('super_admin', 'admin'), async (req, res) => 
     // Broadcast transaction
     const tx = txRes.rows[0];
     broadcast(req.user.userId, { type: 'transaction', data: tx });
+    broadcast(req.user.userId, { type: 'users_update' });
     broadcast(targetId, { type: 'transaction', data: tx });
     
     res.json({ success: true });
@@ -184,6 +186,7 @@ router.post('/debit', requireRole('super_admin', 'admin'), async (req, res) => {
     // Broadcast transaction
     const tx = txRes.rows[0];
     broadcast(req.user.userId, { type: 'transaction', data: tx });
+    broadcast(req.user.userId, { type: 'users_update' });
     broadcast(targetId, { type: 'transaction', data: tx });
     
     res.json({ success: true });
