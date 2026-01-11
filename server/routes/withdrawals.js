@@ -6,6 +6,18 @@ import { broadcast } from '../services/websocket.js';
 const router = Router();
 router.use(authMiddleware);
 
+// Auto-expire old withdrawal requests (runs every minute)
+async function expireOldRequests() {
+  try {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    await query(
+      "UPDATE withdrawal_requests SET status = 'expired' WHERE status = 'pending' AND created_at < $1",
+      [oneHourAgo]
+    );
+  } catch {}
+}
+setInterval(expireOldRequests, 60000);
+
 // Check if caller can manage target user
 async function canManageUser(callerId, callerRole, targetUserId) {
   if (callerRole === 'super_admin') return true;
