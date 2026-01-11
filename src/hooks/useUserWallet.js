@@ -52,14 +52,21 @@ export function useUserWallet() {
   useEffect(() => {
     if (!userId) return;
 
-    const unsub = onWsMessage('balance_update', (msg) => {
+    const unsub1 = onWsMessage('balance_update', (msg) => {
       if (msg.balance !== undefined) {
         setBalance(Number(msg.balance) || 0);
         updateUserBalance(Number(msg.balance) || 0);
       }
     });
 
-    return unsub;
+    const unsub2 = onWsMessage('transaction', () => {
+      refreshTransactions();
+    });
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [userId, updateUserBalance]);
 
   return {

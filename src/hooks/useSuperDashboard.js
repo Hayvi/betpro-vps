@@ -250,16 +250,28 @@ export function useSuperDashboard() {
         setBalance(Number(msg.balance) || 0);
         updateUserBalance(Number(msg.balance) || 0);
       }
+      refreshManagedUsers();
     });
 
     const unsubUsers = onWsMessage('users_update', () => {
       refreshManagedUsers();
     });
 
+    const unsubTransaction = onWsMessage('transaction', () => {
+      refreshTransactions();
+    });
+
+    const unsubWithdrawalApproved = onWsMessage('withdrawal_approved', () => {
+      refreshManagedUsers();
+      refreshTransactions();
+    });
+
     return () => {
       cancelled = true;
       unsubBalance();
       unsubUsers();
+      unsubTransaction();
+      unsubWithdrawalApproved();
     };
   }, [updateUserBalance]);
 

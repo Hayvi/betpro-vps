@@ -194,15 +194,29 @@ export function useAdminDashboard() {
   useEffect(() => {
     if (!userId) return;
 
-    const unsub = onWsMessage('balance_update', (msg) => {
+    const unsub1 = onWsMessage('balance_update', (msg) => {
       if (msg.balance !== undefined) {
         setBalance(Number(msg.balance) || 0);
         updateUserBalance(Number(msg.balance) || 0);
       }
+      refreshManagedUsers();
     });
 
-    return unsub;
-  }, [userId, updateUserBalance]);
+    const unsub2 = onWsMessage('transaction', () => {
+      refreshTransactions();
+    });
+
+    const unsub3 = onWsMessage('withdrawal_approved', () => {
+      refreshManagedUsers();
+      refreshTransactions();
+    });
+
+    return () => {
+      unsub1();
+      unsub2();
+      unsub3();
+    };
+  }, [userId, updateUserBalance, refreshManagedUsers, refreshTransactions]);
 
   const handleError = (error) => {
     const message =
