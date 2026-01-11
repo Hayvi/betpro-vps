@@ -172,15 +172,6 @@ export function NotificationBell() {
             handleReject={handleReject}
           />
 
-          <SentRequestsSection
-            sentRequests={sentRequests}
-            isDark={isDark}
-            cn={cn}
-            formatAmount={formatAmount}
-            getStatusColor={getStatusColor}
-            getStatusLabel={getStatusLabel}
-          />
-
           <NotificationsSection
             notifications={notifications}
             withdrawalRequests={withdrawalRequests}
