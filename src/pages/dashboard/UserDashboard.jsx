@@ -4,10 +4,9 @@ import { PasswordChangeSection } from '@/components/PasswordChangeSection';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { WalletSummaryCard } from '@/components/dashboard/WalletSummaryCard';
 import { TransactionsHistoryCard } from '@/components/dashboard/TransactionsHistoryCard';
-import { DashboardMetricsStrip } from '@/components/dashboard/DashboardMetricsStrip';
 import { DashboardEmptyState } from '@/components/dashboard/DashboardEmptyState';
 import { useI18n } from '@/contexts/I18nContext';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { ArrowDownCircle } from '@/components/ui/BrandIcons';
 
 export default function UserDashboard() {
@@ -30,38 +29,10 @@ export default function UserDashboard() {
   const { t, isRtl } = useI18n();
 
   const txSectionRef = useRef(null);
-  const scrollTo = useCallback(() => {
-    const el = txSectionRef.current;
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
-
-  const { sentCount, receivedCount, volume } = useMemo(() => {
-    let sent = 0;
-    let received = 0;
-    let vol = 0;
-    for (const tx of transactions) {
-      vol += Number(tx.amount || 0);
-      if (tx.sender_id === userId) sent += 1;
-      if (tx.receiver_id === userId) received += 1;
-    }
-    return { sentCount: sent, receivedCount: received, volume: vol };
-  }, [transactions, userId]);
-
-  const metrics = useMemo(() => {
-    return [
-      { key: 'sent', label: t('dash_metric_sent'), value: sentCount, loading: loadingTx, onClick: scrollTo },
-      { key: 'received', label: t('dash_metric_received'), value: receivedCount, loading: loadingTx, onClick: scrollTo },
-      { key: 'transfers', label: t('dash_metric_transfers'), value: transactions.length, loading: loadingTx, onClick: scrollTo },
-      { key: 'volume', label: t('dash_metric_volume'), value: `${volume.toFixed(2)} TND`, loading: loadingTx, onClick: scrollTo },
-    ];
-  }, [loadingTx, receivedCount, scrollTo, sentCount, t, transactions.length, volume]);
 
   return (
     <div className="dash-page" dir={isRtl ? 'rtl' : 'ltr'}>
       <DashboardHeader title={t('dash_user_title')} username={username} role={role} />
-
-      <DashboardMetricsStrip items={metrics} />
 
       <WalletSummaryCard
         title={t('dash_user_walletTitle')}

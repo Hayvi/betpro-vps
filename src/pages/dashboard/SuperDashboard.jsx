@@ -307,15 +307,7 @@ export default function SuperDashboard() {
     <div className="dash-page" dir={isRtl ? 'rtl' : 'ltr'}>
       <DashboardHeader title={t('dash_super_title')} username={username} role={role} />
 
-      <DashboardMetricsStrip
-        role={role}
-        loadingUsers={loadingUsers}
-        loadingTx={loadingTx}
-        managedUsers={managedUsers}
-        transactions={transactions}
-        inactiveUsers={inactiveUsers}
-        loadingInactive={loadingInactive}
-      />
+      <DashboardMetricsStrip items={metrics} />
 
       {role === 'super_admin' && (
         <ConnectedUsersCard
