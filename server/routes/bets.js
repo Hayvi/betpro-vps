@@ -59,8 +59,14 @@ router.post('/place', authMiddleware, async (req, res) => {
     
     await client.query('COMMIT');
     
-    // Broadcast balance update
+    // Broadcast balance update to user and their admin
     broadcast(userId, { type: 'balance_update', balance: newBalance });
+    
+    // Notify admin who created this user
+    const userRes = await query('SELECT created_by FROM profiles WHERE id = $1', [userId]);
+    if (userRes.rows[0]?.created_by) {
+      broadcast(userRes.rows[0].created_by, { type: 'users_update' });
+    }
     
     res.json({ ...slipRes.rows[0], newBalance });
   } catch (err) {
