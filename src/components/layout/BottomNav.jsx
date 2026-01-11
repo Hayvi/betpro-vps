@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils/index';
 import { Ticket } from 'lucide-react';
-import { StyledButton } from "@/components/ui/StyledButton";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContentWithoutClose as SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -289,7 +289,7 @@ function BottomNav({ betSheetOpen, setBetSheetOpen }) {
   const betSlipButton = useMemo(() => (
     <Sheet key="betslip" open={betSheetOpen} onOpenChange={setBetSheetOpen}>
       <SheetTrigger asChild>
-        <StyledButton
+        <Button
           variant="ghost"
           size="icon"
           aria-label="View bet slip"
@@ -313,7 +313,7 @@ function BottomNav({ betSheetOpen, setBetSheetOpen }) {
             )}
           </div>
           <span className="text-[10px] font-semibold">{t('nav_coupon') || 'Coupon'}</span>
-        </StyledButton>
+        </Button>
       </SheetTrigger>
 
       <SheetContent

@@ -1,7 +1,7 @@
 import { Ticket } from 'lucide-react';
 import { X, Trash2, Plus, Minus } from '@/components/ui/BrandIcons';
 import { useBetSlip } from '@/hooks/useBetSlip';
-import { StyledInput } from '@/components/ui/StyledInput';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/contexts/I18nContext';
 
@@ -219,7 +219,7 @@ export default function BetSlipContent({ onRequestClose } = {}) {
             >
               <Minus className="w-4 h-4" />
             </button>
-            <StyledInput
+            <Input
               type="number"
               min="1"
               max={userBalance}
@@ -267,7 +267,7 @@ export default function BetSlipContent({ onRequestClose } = {}) {
         {/* Promo code */}
         <div>
           <label className="block text-xs text-slate-400 mb-1.5">{t('betslip_promoLabel')}</label>
-          <StyledInput
+          <Input
             type="text"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value)}

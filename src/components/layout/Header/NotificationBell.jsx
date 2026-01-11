@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Bell, Check, X, Clock } from '@/components/ui/BrandIcons';
 import { useLocation } from 'react-router-dom';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNotificationCenter } from '@/hooks/useNotificationCenter';

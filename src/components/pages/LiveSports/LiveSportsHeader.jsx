@@ -1,4 +1,4 @@
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -31,7 +31,7 @@ export function LiveSportsHeader({ matchCount = 0, searchQuery = '', onSearchCha
       </div>
 
       {/* Search Bar */}
-      <InputWithPaste
+      <Input
         placeholder={t('liveSports_searchPlaceholder')}
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}

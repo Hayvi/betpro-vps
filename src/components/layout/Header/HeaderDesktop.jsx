@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils/index';
 import { BPCoinIcon, BPLoginIcon, BPLogoutIcon } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useScroll } from '@/hooks/useScroll';
@@ -168,7 +168,7 @@ export function HeaderDesktop({
               </div>
 
               {/* Go to Dashboard */}
-              <StyledButton
+              <Button
                 asChild={!isDashboard}
                 onClick={isDashboard ? (e) => e.preventDefault() : undefined}
                 variant="primary"
@@ -185,10 +185,10 @@ export function HeaderDesktop({
                 ) : (
                   <Link to={dashboardPath}>{t('header_dashboard')}</Link>
                 )}
-              </StyledButton>
+              </Button>
 
               {/* Logout Button */}
-              <StyledButton
+              <Button
                 variant="outline"
                 size="md"
                 onClick={onLogout}
@@ -201,13 +201,13 @@ export function HeaderDesktop({
               >
                 <BPLogoutIcon className="w-4 h-4 ml-2" />
                 {t('header_logout')}
-              </StyledButton>
+              </Button>
 
             </>
           ) : (
             <>
               {/* Login Button */}
-              <StyledButton
+              <Button
                 onClick={onLoginClick}
                 variant="cta"
                 size="md"
@@ -215,7 +215,7 @@ export function HeaderDesktop({
               >
                 <BPLoginIcon className="w-4 h-4 ml-2" />
                 {t('header_login')}
-              </StyledButton>
+              </Button>
 
               <div className={cn(
                 'flex items-center gap-2 px-2 py-1 rounded-full border backdrop-blur-xl',

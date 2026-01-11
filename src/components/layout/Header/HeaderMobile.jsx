@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, memo, startTransition } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils/index';
 import { BPCoinIcon, BPLoginIcon, BPLogoutIcon, BPUserIcon } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useScroll } from '@/hooks/useScroll';
@@ -271,7 +271,7 @@ export function HeaderMobile({
                   </div>
 
                   {/* Logout button */}
-                <StyledButton
+                <Button
                   variant="danger"
                   className="w-full h-10 rounded-xl font-black tracking-widest text-[9px]"
                   onClick={() => {
@@ -281,18 +281,18 @@ export function HeaderMobile({
                 >
                   <BPLogoutIcon className="w-3.5 h-3.5 ml-1.5" />
                   {t('header_logout')}
-                </StyledButton>
+                </Button>
               </div>
             </div>
           ) : (
-            <StyledButton
+            <Button
               size="sm"
               variant="cta"
               onClick={onLoginClick}
               className="transition-transform duration-200 hover:scale-105 active:scale-95 rounded-xl font-bold shadow-[0_4px_20px_rgba(59,130,246,0.5)]"
             >
               <BPLoginIcon className="w-4 h-4" />
-            </StyledButton>
+            </Button>
           )}
         </div>
       </div>

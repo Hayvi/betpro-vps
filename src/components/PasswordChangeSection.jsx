@@ -1,5 +1,5 @@
 import { Eye, EyeOff, ChevronDown, ChevronUp } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { usePasswordChange } from '@/hooks/usePasswordChange';
 import { useI18n } from '@/contexts/I18nContext';
@@ -84,14 +84,14 @@ export function PasswordChangeSection({ collapseKey }) {
                     </div>
 
                 {/* Change Button */}
-                <StyledButton
+                <Button
                     type="submit"
                     disabled={!canSubmit}
                     className="w-full h-11"
                     variant="cta"
                 >
                     {changingPassword ? t('common_changingPassword') : t('password_change_button')}
-                </StyledButton>
+                </Button>
                 </form>
             )}
         </StyledCard>

@@ -5,9 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -73,7 +73,7 @@ export function LoginDialog({ open, onOpenChange }) {
             <Label htmlFor="name" className="font-semibold">
               {t('auth_login_usernameLabel')}
             </Label>
-            <InputWithPaste
+            <Input
               id="name"
               type="text"
               placeholder={t('auth_login_usernamePlaceholder')}
@@ -87,7 +87,7 @@ export function LoginDialog({ open, onOpenChange }) {
             <Label htmlFor="password" className="font-semibold">
               {t('auth_login_passwordLabel')}
             </Label>
-            <InputWithPaste
+            <Input
               id="password"
               type="password"
               placeholder={t('auth_login_passwordPlaceholder')}
@@ -97,7 +97,7 @@ export function LoginDialog({ open, onOpenChange }) {
           </div>
 
           {/* Login Button */}
-          <StyledButton
+          <Button
             type="submit"
             disabled={loading}
             size="lg"
@@ -105,7 +105,7 @@ export function LoginDialog({ open, onOpenChange }) {
             className="w-full"
           >
             {loading ? t('auth_login_loading') : t('auth_login_button')}
-          </StyledButton>
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

@@ -8,6 +8,6 @@ export * from './dialog';
 export * from './label';
 
 // Styled components (with design system)
-export { StyledButton } from './StyledButton';
-export { StyledInput } from './StyledInput';
+
+
 export { StyledCard } from './StyledCard';

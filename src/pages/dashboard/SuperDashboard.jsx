@@ -1,6 +1,6 @@
 import { CopyIconButton } from '@/components/CopyIconButton';
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { PasswordChangeSection } from '@/components/PasswordChangeSection';
@@ -339,7 +339,7 @@ export default function SuperDashboard() {
             <h3 className="dash-subtitle">{t('dash_super_transferTitle')}</h3>
             <div>
               <label className="dash-label">{t('dash_transfer_recipientLabel')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 value={transferUsername}
                 onChange={(e) => {
@@ -355,7 +355,7 @@ export default function SuperDashboard() {
             </div>
             <div>
               <label className="dash-label">{t('dash_amountLabel')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 type="number"
                 min="0"
@@ -372,9 +372,9 @@ export default function SuperDashboard() {
                 <p className="mt-1 text-xs font-bold text-red-500/90">{transferAmountError}</p>
               ) : null}
             </div>
-            <StyledButton type="submit" disabled={submitting} className="w-full h-11">
+            <Button type="submit" disabled={submitting} className="w-full h-11">
               {submitting ? t('common_submitting') : t('dash_super_transferTitle')}
-            </StyledButton>
+            </Button>
           </form>
         </WalletSummaryCard>
 
@@ -403,7 +403,7 @@ export default function SuperDashboard() {
             <form onSubmit={onDebitSubmit} className="space-y-4">
               <div>
                 <label className="dash-label">{t('dash_usernameLabel')}</label>
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   value={debitUsername}
                   onChange={(e) => {
@@ -419,7 +419,7 @@ export default function SuperDashboard() {
               </div>
               <div>
                 <label className="dash-label">{t('dash_amountLabel')}</label>
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   type="number"
                   min="0"
@@ -436,9 +436,9 @@ export default function SuperDashboard() {
                   <p className="mt-1 text-xs font-bold text-red-500/90">{debitAmountError}</p>
                 ) : null}
               </div>
-              <StyledButton type="submit" disabled={submitting} className="w-full h-11">
+              <Button type="submit" disabled={submitting} className="w-full h-11">
                 {submitting ? t('common_submitting') : t('dash_debitUserSubmit')}
-              </StyledButton>
+              </Button>
             </form>
             )}
           </StyledCard>
@@ -457,24 +457,24 @@ export default function SuperDashboard() {
                 title={t('dash_noUsers')}
                 action={
                   userSearch || userRoleFilter !== 'all' ? (
-                    <StyledButton variant="secondary" size="sm" onClick={clearUserFilters}>
+                    <Button variant="secondary" size="sm" onClick={clearUserFilters}>
                       {t('dash_action_clearFilters')}
-                    </StyledButton>
+                    </Button>
                   ) : (
-                    <StyledButton
+                    <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => scrollTo(createUserSectionRef)}
                     >
                       {t('dash_action_createUser')}
-                    </StyledButton>
+                    </Button>
                   )
                 }
               />
             }
             filters={
               <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   className="md:flex-1"
                   placeholder={t('dash_userSearchPlaceholder')}
@@ -523,7 +523,7 @@ export default function SuperDashboard() {
                 <span>{t('dash_balanceLabel')}: <span className="font-bold text-white">{Number(u.balance || 0).toFixed(2)}</span></span>
                 <span>{t('dash_byLabel')}: <span className="text-violet-400/80">{resolveUsernameById(u.created_by)}</span></span>
               </div>
-              <StyledButton
+              <Button
                 size="sm"
                 variant="danger"
                 className="w-full text-[10px]"
@@ -531,7 +531,7 @@ export default function SuperDashboard() {
                 disabled={deletingUserId === u.id}
               >
                 {deletingUserId === u.id ? t('common_deleting') : t('dash_deleteUser')}
-              </StyledButton>
+              </Button>
             </div>
           ))}
           desktopHead={
@@ -584,7 +584,7 @@ export default function SuperDashboard() {
                 {resolveUsernameById(u.created_by)}
               </td>
               <td className="py-3 px-4 text-xs whitespace-nowrap">
-                <StyledButton
+                <Button
                   size="sm"
                   variant="danger"
                   className="h-8 px-3 opacity-60 hover:opacity-100 transition-opacity"
@@ -592,7 +592,7 @@ export default function SuperDashboard() {
                   disabled={deletingUserId === u.id}
                 >
                   {deletingUserId === u.id ? t('common_deleting') : t('dash_deleteUser')}
-                </StyledButton>
+                </Button>
               </td>
             </tr>
           ))}
@@ -615,16 +615,16 @@ export default function SuperDashboard() {
                 title={t('dash_noTransactions')}
                 action={
                   txSearch || txTypeFilter !== 'all' ? (
-                    <StyledButton variant="secondary" size="sm" onClick={clearTxFilters}>
+                    <Button variant="secondary" size="sm" onClick={clearTxFilters}>
                       {t('dash_action_clearFilters')}
-                    </StyledButton>
+                    </Button>
                   ) : null
                 }
               />
             }
             filters={
               <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   className="md:flex-1"
                   placeholder={t('dash_txSearchPlaceholder')}
@@ -750,7 +750,7 @@ export default function SuperDashboard() {
                       <span className="text-[10px] font-black tracking-widest bg-slate-800 text-slate-500 px-2 py-1 rounded">{u.role}</span>
                     </div>
                     <div className=" text-xs text-slate-500">{t('dash_byLabel')}: {resolveUsernameById(u.created_by)}</div>
-                    <StyledButton
+                    <Button
                       size="sm"
                       variant="primary"
                       className="w-full text-[10px]"
@@ -758,7 +758,7 @@ export default function SuperDashboard() {
                       disabled={restoringUserId === u.id}
                     >
                       {restoringUserId === u.id ? t('common_restoring') : t('dash_restoreUser')}
-                    </StyledButton>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -793,7 +793,7 @@ export default function SuperDashboard() {
                           {resolveUsernameById(u.created_by)}
                         </td>
                         <td className="py-3 px-4 text-xs whitespace-nowrap">
-                          <StyledButton
+                          <Button
                             size="sm"
                             variant="primary"
                             className="h-8 px-2 text-[10px] opacity-80 hover:opacity-100 transition-opacity"
@@ -801,7 +801,7 @@ export default function SuperDashboard() {
                             disabled={restoringUserId === u.id}
                           >
                             {restoringUserId === u.id ? t('common_restoring') : t('dash_restoreUser')}
-                          </StyledButton>
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -858,9 +858,9 @@ export default function SuperDashboard() {
               </select>
             </div>
 
-            <StyledButton type="submit" disabled={creatingUser} className="w-full h-11">
+            <Button type="submit" disabled={creatingUser} className="w-full h-11">
               {creatingUser ? t('common_creatingUser') : t('dash_createUserButton')}
-            </StyledButton>
+            </Button>
 
             {createdCredentials && (
               <div className="mt-4 text-sm bg-violet-500/5 border border-violet-500/20 rounded-2xl p-4 relative overflow-hidden group">
@@ -915,7 +915,7 @@ export default function SuperDashboard() {
           <form onSubmit={handleResetPassword} className="space-y-6">
             <div>
               <label className="dash-label">{t('dash_selectUserLabel')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 className="mb-3"
                 placeholder={t('dash_userSearchSimplePlaceholder')}
@@ -939,7 +939,7 @@ export default function SuperDashboard() {
 
             <div>
               <label className="dash-label">{t('password_new_label')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 type="password"
                 value={resetPassword}
@@ -948,9 +948,9 @@ export default function SuperDashboard() {
               />
             </div>
 
-            <StyledButton type="submit" disabled={resetting} className="w-full h-11">
+            <Button type="submit" disabled={resetting} className="w-full h-11">
               {resetting ? t('common_submitting') : t('dash_resetPasswordButton')}
-            </StyledButton>
+            </Button>
           </form>
           )}
         </StyledCard>

@@ -1,6 +1,6 @@
 import { Grid3X3, LayoutGrid } from '@/components/ui/BrandIcons';
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/contexts/I18nContext';
 
@@ -25,14 +25,14 @@ export function CasinoSearchFilters({
       {/* Search & Grid Toggle */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
-          <InputWithPaste
+          <Input
             placeholder={t('casino_searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             showSearch
           />
         </div>
-        <StyledButton
+        <Button
           variant="secondary"
           size="icon"
           onClick={() => onGridSizeChange(gridSize === 'normal' ? 'small' : 'normal')}
@@ -45,13 +45,13 @@ export function CasinoSearchFilters({
           )}
         >
           {gridSize === 'normal' ? <Grid3X3 className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
-        </StyledButton>
+        </Button>
       </div>
 
       {/* Categories */}
       <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
         {categories.map((cat) => (
-          <StyledButton
+          <Button
             key={cat.id}
             variant={selectedCategory === cat.id ? 'primary' : 'secondary'}
             size="sm"
@@ -67,7 +67,7 @@ export function CasinoSearchFilters({
           >
             <span className="ml-1">{cat.icon}</span>
             {cat.name}
-          </StyledButton>
+          </Button>
         ))}
       </div>
     </div>

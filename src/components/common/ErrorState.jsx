@@ -1,5 +1,5 @@
 import { AlertCircle } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { useI18n } from '@/contexts/I18nContext';
 
 export function ErrorState({ message, onRetry, title }) {
@@ -20,9 +20,9 @@ export function ErrorState({ message, onRetry, title }) {
       </p>
 
       {onRetry && (
-        <StyledButton onClick={onRetry} variant="primary" size="md">
+        <Button onClick={onRetry} variant="primary" size="md">
           {t('error_retry')}
-        </StyledButton>
+        </Button>
       )}
     </div>
   );

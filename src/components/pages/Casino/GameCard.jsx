@@ -1,6 +1,6 @@
 import { Play, Clock } from '@/components/ui/BrandIcons';
 import { Badge } from '@/components/ui/badge';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { useI18n } from '@/contexts/I18nContext';
 
 
@@ -86,7 +86,7 @@ export function GameCard({ game, onPlay }) {
         {/* Play Button - Shows on Hover */}
         {!isComingSoon && (
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <StyledButton
+            <Button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
@@ -98,7 +98,7 @@ export function GameCard({ game, onPlay }) {
               aria-label={`${t('casino_playButton_ariaLabelPrefix')} ${game.name}`}
             >
               <Play className="w-6 h-6 text-white fill-white mr-[-2px]" />
-            </StyledButton>
+            </Button>
           </div>
         )}
 

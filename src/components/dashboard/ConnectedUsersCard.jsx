@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { StyledCard } from '@/components/ui/StyledCard';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConnectedUsersMap } from '@/components/dashboard/ConnectedUsersMap';
 import { ChevronDown, ChevronUp } from '@/components/ui/BrandIcons';
@@ -169,14 +169,14 @@ export function ConnectedUsersCard({
                                     <td className="py-3 px-4 border-r border-slate-800/60 whitespace-nowrap tabular-nums">{formatCoords(s.ip_lat, s.ip_lng)}</td>
                                     <td className="py-3 px-4 border-r border-slate-800/60 whitespace-nowrap tabular-nums">{formatCoords(s.gps_lat, s.gps_lng)}</td>
                                     <td className="py-3 px-4 whitespace-nowrap">
-                                      <StyledButton
+                                      <Button
                                         size="sm"
                                         variant="secondary"
                                         onClick={() => setSelectedSessionForMap(selectedSessionForMap === s.id ? null : s.id)}
                                         className="text-xs px-2"
                                       >
                                         {selectedSessionForMap === s.id ? 'Hide' : 'MAP'}
-                                      </StyledButton>
+                                      </Button>
                                     </td>
                                   </tr>
                                 ))}
@@ -213,14 +213,14 @@ export function ConnectedUsersCard({
                         </div>
 
                         <div className="mt-3">
-                          <StyledButton
+                          <Button
                             size="sm"
                             variant="secondary"
                             onClick={() => setSelectedSessionForMap(selectedSessionForMap === s.id ? null : s.id)}
                             className="text-xs px-2 w-full"
                           >
                             {selectedSessionForMap === s.id ? 'Hide Map' : 'Show Map'}
-                          </StyledButton>
+                          </Button>
                         </div>
                       </div>
                     ))}

@@ -1,5 +1,5 @@
 import { TrendingUp } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 
 
 export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
@@ -24,7 +24,7 @@ export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
     <div className="grid grid-cols-3 gap-2">
       {/* Home Odds */}
       <div className="relative">
-        <StyledButton
+        <Button
           variant="secondary"
           size="md"
           onClick={(e) => {
@@ -36,7 +36,7 @@ export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
         >
           <span className="text-gray-400 text-xs">1</span>
           <span className="text-emerald-400 font-bold">{odds.home}</span>
-        </StyledButton>
+        </Button>
         {animatedOdds.oddsType === 'home' && (
           <TrendingUp
             className={`absolute top-1 left-1 w-3 h-3 ${
@@ -49,7 +49,7 @@ export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
       {/* Draw Odds (if available) */}
       {isValidOdd(odds.draw) && (
         <div>
-          <StyledButton
+          <Button
             variant="secondary"
             size="md"
             onClick={(e) => {
@@ -61,13 +61,13 @@ export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
           >
             <span className="text-gray-400 text-xs">X</span>
             <span className="text-gray-300 font-bold">{odds.draw}</span>
-          </StyledButton>
+          </Button>
         </div>
       )}
 
       {/* Away Odds */}
       <div className={isValidOdd(odds.draw) ? '' : 'col-span-2'}>
-        <StyledButton
+        <Button
           variant="secondary"
           size="md"
           onClick={(e) => {
@@ -79,7 +79,7 @@ export function OddsSection({ odds = {}, animatedOdds = {}, onOddsClick }) {
         >
           <span className="text-gray-400 text-xs">2</span>
           <span className="text-emerald-400 font-bold">{odds.away}</span>
-        </StyledButton>
+        </Button>
       </div>
     </div>
   );

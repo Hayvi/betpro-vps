@@ -1,6 +1,6 @@
 import { CopyIconButton } from '@/components/CopyIconButton';
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { PasswordChangeSection } from '@/components/PasswordChangeSection';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <label className="dash-label">{t('dash_transfer_recipientLabel')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 value={transferUsername}
                 onChange={(e) => {
@@ -295,7 +295,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <label className="dash-label">{t('dash_amountLabel')}</label>
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 type="number"
                 min="0"
@@ -312,9 +312,9 @@ export default function AdminDashboard() {
                 <p className="mt-1 text-xs font-bold text-red-500/90">{transferAmountError}</p>
               ) : null}
             </div>
-            <StyledButton type="submit" disabled={submitting} className="w-full h-11">
+            <Button type="submit" disabled={submitting} className="w-full h-11">
               {submitting ? t('common_submitting') : t('dash_admin_transferTitle')}
-            </StyledButton>
+            </Button>
           </form>
         </WalletSummaryCard>
 
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
             <form onSubmit={onDebitSubmit} className="space-y-5">
               <div>
                 <label className="dash-label">{t('dash_usernameLabel')}</label>
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   value={debitUsername}
                   onChange={(e) => {
@@ -359,7 +359,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <label className="dash-label">{t('dash_amountLabel')}</label>
-                <InputWithPaste
+                <Input
                   variant="dashboard"
                   type="number"
                   min="0"
@@ -376,9 +376,9 @@ export default function AdminDashboard() {
                   <p className="mt-1 text-xs font-bold text-red-500/90">{debitAmountError}</p>
                 ) : null}
               </div>
-              <StyledButton variant="danger" type="submit" disabled={submitting} className="w-full h-11">
+              <Button variant="danger" type="submit" disabled={submitting} className="w-full h-11">
                 {submitting ? t('common_submitting') : t('dash_debitUserSubmit')}
-              </StyledButton>
+              </Button>
             </form>
             )}
           </StyledCard>
@@ -396,24 +396,24 @@ export default function AdminDashboard() {
                 title={t('dash_noUsers')}
                 action={
                   userSearch || userRoleFilter !== 'all' ? (
-                    <StyledButton variant="secondary" size="sm" onClick={clearUserFilters}>
+                    <Button variant="secondary" size="sm" onClick={clearUserFilters}>
                       {t('dash_action_clearFilters')}
-                    </StyledButton>
+                    </Button>
                   ) : (
-                    <StyledButton
+                    <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => scrollTo(createUserSectionRef)}
                     >
                       {t('dash_action_createUser')}
-                    </StyledButton>
+                    </Button>
                   )
                 }
               />
             }
           filters={
             <div className="flex flex-col md:flex-row gap-3 mb-3">
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 className="md:flex-1"
                 placeholder={t('dash_userSearchPlaceholder')}
@@ -520,16 +520,16 @@ export default function AdminDashboard() {
                 title={t('dash_noTransactions')}
                 action={
                   txSearch || txTypeFilter !== 'all' ? (
-                    <StyledButton variant="secondary" size="sm" onClick={clearTxFilters}>
+                    <Button variant="secondary" size="sm" onClick={clearTxFilters}>
                       {t('dash_action_clearFilters')}
-                    </StyledButton>
+                    </Button>
                   ) : null
                 }
               />
             }
           filters={
             <div className="flex flex-col md:flex-row gap-3 mb-3">
-              <InputWithPaste
+              <Input
                 variant="dashboard"
                 className="md:flex-1"
                 placeholder={t('dash_txSearchPlaceholder')}
@@ -649,9 +649,9 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              <StyledButton variant="cta" type="submit" disabled={creatingUser} className="w-full h-11">
+              <Button variant="cta" type="submit" disabled={creatingUser} className="w-full h-11">
                 {creatingUser ? t('common_creatingUser') : t('dash_createUserButton')}
-              </StyledButton>
+              </Button>
 
               {createdCredentials && (
                 <div className="mt-4 text-sm bg-slate-50 dark:bg-slate-800 rounded-lg p-3">

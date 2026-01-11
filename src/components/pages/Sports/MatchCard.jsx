@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronRight, MoreHorizontal, Clock } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { cn } from '@/lib/utils';
 import { useBet } from '@/contexts/BetContext';
@@ -243,7 +243,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
                 </span>
               )}
             </div>
-            <StyledButton
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -263,7 +263,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               {match.odds.home}
-            </StyledButton>
+            </Button>
           </div>
 
           {/* Away Team */}
@@ -279,7 +279,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
                 </span>
               )}
             </div>
-            <StyledButton
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -299,14 +299,14 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               {match.odds.away}
-            </StyledButton>
+            </Button>
           </div>
         </div>
 
         {/* Draw Button */}
         {isValidOdd(match.odds.draw) && (
           <div className="flex justify-center mt-3 relative">
-            <StyledButton
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -326,7 +326,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               X {match.odds.draw}
-            </StyledButton>
+            </Button>
           </div>
         )}
       </div>
@@ -442,7 +442,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
 
           {/* Odds Buttons */}
           <div className="col-span-7 grid grid-cols-3 gap-2">
-            <StyledButton
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -462,8 +462,8 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               {match.odds.home}
-            </StyledButton>
-            <StyledButton
+            </Button>
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -483,8 +483,8 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               {match.odds.draw}
-            </StyledButton>
-            <StyledButton
+            </Button>
+            <Button
               size="sm"
               variant="secondary"
               onClick={(e) => {
@@ -504,7 +504,7 @@ export function MatchCard({ match, onOddsClick, onShowAllMarkets, isDark = true 
               )}
             >
               {match.odds.away}
-            </StyledButton>
+            </Button>
           </div>
         </div>
       </div>

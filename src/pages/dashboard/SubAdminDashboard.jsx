@@ -1,6 +1,6 @@
 import { CopyIconButton } from '@/components/CopyIconButton';
-import { InputWithPaste } from '@/components/ui/InputWithPaste';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { StyledCard } from '@/components/ui/StyledCard';
 import { PasswordChangeSection } from '@/components/PasswordChangeSection';
 import { useSubAdminDashboard } from '@/hooks/useSubAdminDashboard';
@@ -215,7 +215,7 @@ export default function SubAdminDashboard() {
         <form onSubmit={onTransferSubmit} className="space-y-4 mt-4">
           <div>
             <label className="dash-label">{t('dash_transfer_recipientLabel')}</label>
-            <InputWithPaste
+            <Input
               variant="dashboard"
               value={targetUsername}
               onChange={(e) => {
@@ -232,7 +232,7 @@ export default function SubAdminDashboard() {
 
           <div>
             <label className="dash-label">{t('dash_amountLabel')}</label>
-            <InputWithPaste
+            <Input
               variant="dashboard"
               type="number"
               min="0"
@@ -250,9 +250,9 @@ export default function SubAdminDashboard() {
             ) : null}
           </div>
 
-          <StyledButton type="submit" disabled={submitting} className="w-full h-11">
+          <Button type="submit" disabled={submitting} className="w-full h-11">
             {submitting ? t('common_transferring') : t('dash_sub_transferTitle')}
-          </StyledButton>
+          </Button>
         </form>
       </WalletSummaryCard>
 
@@ -280,7 +280,7 @@ export default function SubAdminDashboard() {
         <form onSubmit={onDebitSubmit} className="space-y-5">
           <div>
             <label className="dash-label">{t('dash_usernameLabel')}</label>
-            <InputWithPaste
+            <Input
               variant="dashboard"
               value={debitUsername}
               onChange={(e) => {
@@ -296,7 +296,7 @@ export default function SubAdminDashboard() {
           </div>
           <div>
             <label className="dash-label">{t('dash_amountLabel')}</label>
-            <InputWithPaste
+            <Input
               variant="dashboard"
               type="number"
               min="0"
@@ -313,9 +313,9 @@ export default function SubAdminDashboard() {
               <p className="mt-1 text-xs font-bold text-red-500/90">{debitAmountError}</p>
             ) : null}
           </div>
-          <StyledButton variant="danger" type="submit" disabled={submitting} className="w-full h-11">
+          <Button variant="danger" type="submit" disabled={submitting} className="w-full h-11">
             {submitting ? t('common_submitting') : t('dash_debitUserSubmit')}
-          </StyledButton>
+          </Button>
         </form>
         )}
       </StyledCard>
@@ -331,20 +331,20 @@ export default function SubAdminDashboard() {
             title={t('dash_noUsers')}
             action={
               userSearch ? (
-                <StyledButton variant="secondary" size="sm" onClick={clearUserFilters}>
+                <Button variant="secondary" size="sm" onClick={clearUserFilters}>
                   {t('dash_action_clearFilters')}
-                </StyledButton>
+                </Button>
               ) : (
-                <StyledButton variant="secondary" size="sm" onClick={() => scrollTo(createUserSectionRef)}>
+                <Button variant="secondary" size="sm" onClick={() => scrollTo(createUserSectionRef)}>
                   {t('dash_action_createUser')}
-                </StyledButton>
+                </Button>
               )
             }
           />
         }
         filters={
           <div className="mb-3">
-            <InputWithPaste
+            <Input
               variant="dashboard"
               placeholder={t('dash_userSearchSimplePlaceholder')}
               value={userSearch}
@@ -450,9 +450,9 @@ export default function SubAdminDashboard() {
                 />
               </div>
 
-              <StyledButton variant="cta" type="submit" disabled={creatingUser} className="w-full h-11">
+              <Button variant="cta" type="submit" disabled={creatingUser} className="w-full h-11">
                 {creatingUser ? t('common_creatingUser') : t('dash_createUserButton')}
-              </StyledButton>
+              </Button>
 
               {createdCredentials && (
                 <div className="mt-4 text-sm bg-slate-50 dark:bg-slate-800 rounded-lg p-3">

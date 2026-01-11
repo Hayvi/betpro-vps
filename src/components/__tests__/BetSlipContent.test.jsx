@@ -34,7 +34,7 @@ vi.mock('@/contexts/AuthContext', () => ({
   }),
 }))
 
-// Mock ThemeContext so components using useTheme (e.g., StyledInput) don’t require a real ThemeProvider
+// Mock ThemeContext so components using useTheme (e.g., Input) don’t require a real ThemeProvider
 vi.mock('@/contexts/ThemeContext', () => ({
   useTheme: () => ({
     isDark: true,

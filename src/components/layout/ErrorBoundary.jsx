@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertCircle, RefreshCw } from '@/components/ui/BrandIcons';
-import { StyledButton } from '@/components/ui/StyledButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { I18nContext } from '@/contexts/I18nContext';
 import { canReload, recordReload, showReloadLimitError } from '@/utils/reloadManager';
@@ -88,7 +88,7 @@ class ErrorBoundary extends React.Component {
                     </p>
                   </div>
                 )}
-                <StyledButton
+                <Button
                   onClick={this.handleReset}
                   variant="cta"
                   size="md"
@@ -96,7 +96,7 @@ class ErrorBoundary extends React.Component {
                 >
                   <RefreshCw className="w-4 h-4 ml-2" />
                   {t('error_retry')}
-                </StyledButton>
+                </Button>
               </div>
             </div>
           )}
