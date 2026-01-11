@@ -211,10 +211,15 @@ export function useAdminDashboard() {
       refreshTransactions();
     });
 
+    const unsub4 = onWsMessage('withdrawal_rejected', () => {
+      refreshTransactions();
+    });
+
     return () => {
       unsub1();
       unsub2();
       unsub3();
+      unsub4();
     };
   }, [userId, updateUserBalance, refreshManagedUsers, refreshTransactions]);
 
