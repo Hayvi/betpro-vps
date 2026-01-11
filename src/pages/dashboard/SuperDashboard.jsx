@@ -716,7 +716,7 @@ export default function SuperDashboard() {
             <div className="flex items-center gap-2 relative z-20">
               <div className="p-1.5 rounded-lg bg-slate-500/10 border border-slate-500/20">
                 <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 715.636 5.636m12.728 12.728L5.636 5.636" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 05.636 5.636m12.728 12.728L5.636 5.636" />
                 </svg>
               </div>
               <button
