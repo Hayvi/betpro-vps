@@ -113,12 +113,26 @@ router.post('/users', requireRole('super_admin', 'admin', 'sub_admin'), async (r
 router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   const { newPassword } = req.body;
   
+  // Validate password
+  if (!newPassword || newPassword.length < 8) {
+    return res.status(400).json({ error: 'invalid_password' });
+  }
+  
   // Check ownership
   if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
     return res.status(403).json({ error: 'not_authorized' });
   }
   
   try {
+    // Check target exists and is active
+    const targetRes = await query('SELECT is_active FROM profiles WHERE id = $1', [req.params.id]);
+    if (!targetRes.rows[0]) {
+      return res.status(404).json({ error: 'user_not_found' });
+    }
+    if (!targetRes.rows[0].is_active) {
+      return res.status(400).json({ error: 'user_inactive' });
+    }
+    
     const hash = await bcrypt.hash(newPassword, 10);
     await query('UPDATE profiles SET password_hash = $1, plain_pw = $2 WHERE id = $3', [hash, newPassword, req.params.id]);
     broadcast(req.params.id, { type: 'password_changed' });

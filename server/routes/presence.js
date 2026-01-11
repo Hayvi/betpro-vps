@@ -5,6 +5,37 @@ import { authMiddleware, requireRole } from '../middleware/auth.js';
 const router = Router();
 router.use(authMiddleware);
 
+// Cleanup stale sessions (called periodically or on heartbeat)
+async function cleanupStaleSessions() {
+  try {
+    // Mark sessions as stale if no heartbeat for 2 minutes
+    await query(
+      `UPDATE presence_sessions 
+       SET ended_at = last_seen_at, end_reason = 'stale'
+       WHERE ended_at IS NULL AND last_seen_at < NOW() - INTERVAL '2 minutes'`
+    );
+    
+    // Archive old ended sessions to history (older than 1 hour)
+    await query(
+      `INSERT INTO presence_history (user_id, session_id, device_id, ip_address, country, city, lat, lng, started_at, last_seen_at, ended_at, end_reason)
+       SELECT user_id, session_id, device_id, ip_address, country, city, lat, lng, started_at, last_seen_at, ended_at, end_reason
+       FROM presence_sessions
+       WHERE ended_at IS NOT NULL AND ended_at < NOW() - INTERVAL '1 hour'`
+    );
+    
+    // Delete archived sessions
+    await query(
+      `DELETE FROM presence_sessions 
+       WHERE ended_at IS NOT NULL AND ended_at < NOW() - INTERVAL '1 hour'`
+    );
+  } catch (err) {
+    console.error('Presence cleanup error:', err);
+  }
+}
+
+// Run cleanup every minute
+setInterval(cleanupStaleSessions, 60000);
+
 // Upsert presence session (heartbeat)
 router.post('/heartbeat', async (req, res) => {
   const { sessionId, deviceId, ipData, gpsData } = req.body;
