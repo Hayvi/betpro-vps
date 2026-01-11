@@ -128,14 +128,26 @@ router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_adm
   }
 });
 
-// Restore user account
-router.patch('/users/:id/restore', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
-  // Check ownership
-  if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
-    return res.status(403).json({ error: 'not_authorized' });
+// Restore user account - only super_admin can restore
+router.patch('/users/:id/restore', requireRole('super_admin'), async (req, res) => {
+  // Cannot restore yourself
+  if (req.params.id === req.user.userId) {
+    return res.status(400).json({ error: 'invalid_target' });
   }
   
   try {
+    // Check target exists and is not super_admin
+    const targetRes = await query('SELECT role, is_active FROM profiles WHERE id = $1', [req.params.id]);
+    if (!targetRes.rows[0]) {
+      return res.status(404).json({ error: 'user_not_found' });
+    }
+    if (targetRes.rows[0].role === 'super_admin') {
+      return res.status(403).json({ error: 'not_authorized' });
+    }
+    if (targetRes.rows[0].is_active) {
+      return res.status(400).json({ error: 'already_active' });
+    }
+    
     await query('UPDATE profiles SET is_active = true WHERE id = $1', [req.params.id]);
     broadcast(req.user.userId, { type: 'users_update' });
     res.json({ success: true });
@@ -144,14 +156,23 @@ router.patch('/users/:id/restore', requireRole('super_admin', 'admin', 'sub_admi
   }
 });
 
-// Delete (soft) user account
-router.delete('/users/:id', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
-  // Check ownership
-  if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
-    return res.status(403).json({ error: 'not_authorized' });
+// Delete (soft) user account - only super_admin can delete
+router.delete('/users/:id', requireRole('super_admin'), async (req, res) => {
+  // Cannot delete yourself
+  if (req.params.id === req.user.userId) {
+    return res.status(400).json({ error: 'invalid_target' });
   }
   
   try {
+    // Check target is not super_admin
+    const targetRes = await query('SELECT role FROM profiles WHERE id = $1', [req.params.id]);
+    if (!targetRes.rows[0]) {
+      return res.status(404).json({ error: 'user_not_found' });
+    }
+    if (targetRes.rows[0].role === 'super_admin') {
+      return res.status(403).json({ error: 'not_authorized' });
+    }
+    
     await query('UPDATE profiles SET is_active = false WHERE id = $1', [req.params.id]);
     broadcast(req.params.id, { type: 'account_disabled' });
     broadcast(req.user.userId, { type: 'users_update' });

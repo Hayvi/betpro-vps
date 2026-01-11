@@ -40,6 +40,12 @@ router.post('/transfer', async (req, res) => {
     }
     const receiverId = recvRes.rows[0].id;
     
+    // Cannot transfer to self
+    if (receiverId === req.user.userId) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'invalid_target' });
+    }
+    
     // Check sender balance (skip for super_admin/admin)
     if (!isUnlimitedSender) {
       const senderRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [req.user.userId]);
@@ -96,7 +102,7 @@ router.post('/credit', requireRole('super_admin', 'admin'), async (req, res) => 
   try {
     await client.query('BEGIN');
     
-    const targetRes = await client.query('SELECT id FROM profiles WHERE username = $1', [targetUsername]);
+    const targetRes = await client.query('SELECT id FROM profiles WHERE username = $1 AND is_active = true', [targetUsername]);
     if (!targetRes.rows[0]) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'user_not_found' });
@@ -143,10 +149,18 @@ router.post('/debit', requireRole('super_admin', 'admin'), async (req, res) => {
   try {
     await client.query('BEGIN');
     
-    const targetRes = await client.query('SELECT id, balance FROM profiles WHERE username = $1 FOR UPDATE', [targetUsername]);
+    const targetRes = await client.query('SELECT id, balance FROM profiles WHERE username = $1 AND is_active = true FOR UPDATE', [targetUsername]);
     if (!targetRes.rows[0]) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'user_not_found' });
+    }
+    
+    const targetId = targetRes.rows[0].id;
+    
+    // Cannot debit yourself
+    if (targetId === req.user.userId) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'invalid_target' });
     }
     
     if (targetRes.rows[0].balance < parsedAmount) {
@@ -154,7 +168,6 @@ router.post('/debit', requireRole('super_admin', 'admin'), async (req, res) => {
       return res.status(400).json({ error: 'insufficient_balance' });
     }
     
-    const targetId = targetRes.rows[0].id;
     // Debit from user (admin destroys money - no addition to admin)
     await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, targetId]);
     const txRes = await client.query(
