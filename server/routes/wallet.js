@@ -77,7 +77,7 @@ router.post('/transfer', async (req, res) => {
   }
 });
 
-// Credit user balance (admin)
+// Credit user balance (admin) - creates money, no balance check for admin
 router.post('/credit', async (req, res) => {
   const { targetUsername, amount } = req.body;
   const parsedAmount = Number(amount);
@@ -97,14 +97,7 @@ router.post('/credit', async (req, res) => {
     }
     const targetId = targetRes.rows[0].id;
     
-    // Deduct from admin
-    const adminRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [req.user.userId]);
-    if (adminRes.rows[0].balance < parsedAmount) {
-      await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'insufficient_balance' });
-    }
-    
-    await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, req.user.userId]);
+    // Credit target user (admin creates money - no deduction from admin)
     await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, targetId]);
     const txRes = await client.query(
       'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -113,12 +106,8 @@ router.post('/credit', async (req, res) => {
     
     await client.query('COMMIT');
     
-    // Get updated balances and broadcast
-    const [adminBal, targetBal] = await Promise.all([
-      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
-      client.query('SELECT balance FROM profiles WHERE id = $1', [targetId])
-    ]);
-    broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
+    // Get updated balance and broadcast
+    const targetBal = await client.query('SELECT balance FROM profiles WHERE id = $1', [targetId]);
     broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
     
     // Broadcast transaction
@@ -135,7 +124,7 @@ router.post('/credit', async (req, res) => {
   }
 });
 
-// Debit user balance (admin)
+// Debit user balance (admin) - takes money from user, destroys it (no add to admin)
 router.post('/debit', async (req, res) => {
   const { targetUsername, amount } = req.body;
   const parsedAmount = Number(amount);
@@ -160,8 +149,8 @@ router.post('/debit', async (req, res) => {
     }
     
     const targetId = targetRes.rows[0].id;
+    // Debit from user (admin destroys money - no addition to admin)
     await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, targetId]);
-    await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, req.user.userId]);
     const txRes = await client.query(
       'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
       [targetId, req.user.userId, parsedAmount, 'debit']
@@ -169,12 +158,8 @@ router.post('/debit', async (req, res) => {
     
     await client.query('COMMIT');
     
-    // Get updated balances and broadcast
-    const [adminBal, targetBal] = await Promise.all([
-      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
-      client.query('SELECT balance FROM profiles WHERE id = $1', [targetId])
-    ]);
-    broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
+    // Get updated balance and broadcast
+    const targetBal = await client.query('SELECT balance FROM profiles WHERE id = $1', [targetId]);
     broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
     
     // Broadcast transaction
