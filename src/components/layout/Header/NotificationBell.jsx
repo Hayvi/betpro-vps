@@ -282,7 +282,15 @@ function SentRequestsSection({
   getStatusLabel,
 }) {
   const { t } = useI18n();
-  if (!sentRequests.length) return null;
+  // Show recently resolved (approved/rejected in last 24h) first, then pending
+  const recentlyResolved = sentRequests.filter(r => 
+    (r.status === 'approved' || r.status === 'rejected') && 
+    r.approved_at && new Date(r.approved_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+  );
+  const pending = sentRequests.filter(r => r.status === 'pending');
+  const displayRequests = [...recentlyResolved, ...pending];
+  
+  if (!displayRequests.length) return null;
 
   return (
     <>
@@ -295,12 +303,15 @@ function SentRequestsSection({
         {t('notifications_sentWithdrawalsTitle')}
       </div>
       <div className="max-h-32 overflow-y-auto">
-        {sentRequests.slice(0, 5).map((req) => (
+        {displayRequests.slice(0, 5).map((req) => (
           <div
             key={req.id}
             className={cn(
               'px-3 py-2 border-b text-xs',
-              isDark ? 'border-slate-800' : 'border-slate-100'
+              isDark ? 'border-slate-800' : 'border-slate-100',
+              (req.status === 'approved' || req.status === 'rejected') && 'bg-opacity-10',
+              req.status === 'approved' && (isDark ? 'bg-emerald-900' : 'bg-emerald-50'),
+              req.status === 'rejected' && (isDark ? 'bg-red-900' : 'bg-red-50')
             )}
           >
             <div className="flex items-center justify-between">
