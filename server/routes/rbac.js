@@ -125,22 +125,34 @@ router.delete('/users/:id', requireRole('super_admin', 'admin', 'sub_admin'), as
   }
 });
 
-// Get my transactions
+// Get my transactions (super_admin sees all)
 router.get('/transactions', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 50;
   const offset = (page - 1) * pageSize;
   
   try {
-    const countQ = await query(
-      'SELECT COUNT(*) FROM transactions WHERE sender_id = $1 OR receiver_id = $1',
-      [req.user.userId]
-    );
-    const dataQ = await query(
-      `SELECT id, sender_id, receiver_id, amount, type, created_at FROM transactions 
-       WHERE sender_id = $1 OR receiver_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`,
-      [req.user.userId, pageSize, offset]
-    );
+    const isSuperAdmin = req.user.role === 'super_admin';
+    
+    let countQ, dataQ;
+    if (isSuperAdmin) {
+      countQ = await query('SELECT COUNT(*) FROM transactions');
+      dataQ = await query(
+        `SELECT id, sender_id, receiver_id, amount, type, created_at FROM transactions 
+         ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+        [pageSize, offset]
+      );
+    } else {
+      countQ = await query(
+        'SELECT COUNT(*) FROM transactions WHERE sender_id = $1 OR receiver_id = $1',
+        [req.user.userId]
+      );
+      dataQ = await query(
+        `SELECT id, sender_id, receiver_id, amount, type, created_at FROM transactions 
+         WHERE sender_id = $1 OR receiver_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`,
+        [req.user.userId, pageSize, offset]
+      );
+    }
     res.json({ transactions: dataQ.rows, totalCount: parseInt(countQ.rows[0].count) });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
