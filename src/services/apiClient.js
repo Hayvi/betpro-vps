@@ -39,12 +39,6 @@ export const api = {
     place: (data) => request('/bets/place', { method: 'POST', body: JSON.stringify(data) }),
     history: () => request('/bets/history'),
   },
-  admin: {
-    getUsers: () => request('/admin/users'),
-    createUser: (data) => request('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
-    disableUser: (id) => request(`/admin/users/${id}/disable`, { method: 'PATCH' }),
-    changePassword: (id, password) => request(`/admin/users/${id}/password`, { method: 'PATCH', body: JSON.stringify({ password }) }),
-  },
   withdrawals: {
     create: (targetUsername, amount) => request('/withdrawals', { method: 'POST', body: JSON.stringify({ targetUsername, amount }) }),
     approve: (id) => request(`/withdrawals/${id}/approve`, { method: 'POST' }),
