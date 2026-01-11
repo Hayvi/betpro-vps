@@ -68,9 +68,10 @@ export function useNotificationCenter() {
     loadSentRequests();
 
     // Listen for transaction updates via WebSocket
-    const unsubTransaction = onWsMessage('transaction', (tx) => {
+    const unsubTransaction = onWsMessage('transaction', (msg) => {
       if (cancelled) return;
-      if (tx.receiver_id === userId && ['transfer', 'admin_credit', 'credit'].includes(tx.type)) {
+      const tx = msg.data;
+      if (tx?.receiver_id === userId && ['transfer', 'admin_credit', 'credit'].includes(tx.type)) {
         setNotifications((prev) => {
           const existing = prev.find((p) => p.id === tx.id);
           if (existing) return prev;
