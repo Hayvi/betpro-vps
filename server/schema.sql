@@ -126,6 +126,15 @@ CREATE TABLE presence_history (
 
 CREATE INDEX idx_presence_history_user ON presence_history(user_id, started_at DESC);
 
+-- Performance indexes for 5K+ users
+CREATE INDEX idx_profiles_active ON profiles(is_active) WHERE is_active = true;
+CREATE INDEX idx_profiles_role_created ON profiles(role, created_at DESC) WHERE is_active = true;
+CREATE INDEX idx_transactions_type ON transactions(type);
+CREATE INDEX idx_transactions_type_created ON transactions(type, created_at DESC);
+CREATE INDEX idx_presence_sessions_user ON presence_sessions(user_id);
+CREATE INDEX idx_presence_sessions_session ON presence_sessions(session_id);
+CREATE INDEX idx_presence_history_ended ON presence_history(ended_at DESC);
+
 -- Updated_at trigger
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$

@@ -5,7 +5,7 @@ import { authMiddleware, requireRole } from '../middleware/auth.js';
 const router = Router();
 router.use(authMiddleware);
 
-// Cleanup stale sessions (called periodically or on heartbeat)
+// Cleanup stale sessions and old history (called periodically)
 async function cleanupStaleSessions() {
   try {
     // Mark sessions as stale if no heartbeat for 2 minutes
@@ -27,6 +27,17 @@ async function cleanupStaleSessions() {
     await query(
       `DELETE FROM presence_sessions 
        WHERE ended_at IS NOT NULL AND ended_at < NOW() - INTERVAL '1 hour'`
+    );
+    
+    // Cleanup old presence history (older than 30 days) - batch delete
+    await query(
+      `DELETE FROM presence_history 
+       WHERE archived_at < NOW() - INTERVAL '30 days'
+       AND id IN (
+         SELECT id FROM presence_history 
+         WHERE archived_at < NOW() - INTERVAL '30 days'
+         LIMIT 1000
+       )`
     );
   } catch (err) {
     console.error('Presence cleanup error:', err);
