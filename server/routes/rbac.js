@@ -77,6 +77,10 @@ router.post('/users', requireRole('super_admin', 'admin', 'sub_admin'), async (r
        VALUES ($1, $2, $3, $4, $5, true) RETURNING id, username, role`,
       [username, hash, password, targetRole, req.user.userId]
     );
+    
+    // Broadcast users update to creator
+    broadcast(req.user.userId, { type: 'users_update' });
+    
     res.json({ username, password, ...result.rows[0] });
   } catch (err) {
     if (err.code === '23505') return res.status(400).json({ error: 'username_exists' });
@@ -102,6 +106,7 @@ router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_adm
 router.patch('/users/:id/restore', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   try {
     await query('UPDATE profiles SET is_active = true WHERE id = $1', [req.params.id]);
+    broadcast(req.user.userId, { type: 'users_update' });
     res.json({ success: true });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
@@ -113,6 +118,7 @@ router.delete('/users/:id', requireRole('super_admin', 'admin', 'sub_admin'), as
   try {
     await query('UPDATE profiles SET is_active = false WHERE id = $1', [req.params.id]);
     broadcast(req.params.id, { type: 'account_disabled' });
+    broadcast(req.user.userId, { type: 'users_update' });
     res.json({ success: true });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });

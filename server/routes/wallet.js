@@ -48,8 +48,8 @@ router.post('/transfer', async (req, res) => {
     // Transfer
     await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, req.user.userId]);
     await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, receiverId]);
-    await client.query(
-      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4)',
+    const txRes = await client.query(
+      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
       [req.user.userId, receiverId, parsedAmount, 'transfer']
     );
     
@@ -62,6 +62,11 @@ router.post('/transfer', async (req, res) => {
     ]);
     broadcast(req.user.userId, { type: 'balance_update', balance: senderBal.rows[0].balance });
     broadcast(receiverId, { type: 'balance_update', balance: receiverBal.rows[0].balance });
+    
+    // Broadcast transaction to both parties
+    const tx = txRes.rows[0];
+    broadcast(req.user.userId, { type: 'transaction', ...tx });
+    broadcast(receiverId, { type: 'transaction', ...tx });
     
     res.json({ success: true });
   } catch {
@@ -101,8 +106,8 @@ router.post('/credit', async (req, res) => {
     
     await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, req.user.userId]);
     await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, targetId]);
-    await client.query(
-      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4)',
+    const txRes = await client.query(
+      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
       [req.user.userId, targetId, parsedAmount, 'credit']
     );
     
@@ -115,6 +120,11 @@ router.post('/credit', async (req, res) => {
     ]);
     broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
     broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
+    
+    // Broadcast transaction
+    const tx = txRes.rows[0];
+    broadcast(req.user.userId, { type: 'transaction', ...tx });
+    broadcast(targetId, { type: 'transaction', ...tx });
     
     res.json({ success: true });
   } catch {
@@ -152,8 +162,8 @@ router.post('/debit', async (req, res) => {
     const targetId = targetRes.rows[0].id;
     await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, targetId]);
     await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, req.user.userId]);
-    await client.query(
-      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4)',
+    const txRes = await client.query(
+      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
       [targetId, req.user.userId, parsedAmount, 'debit']
     );
     
@@ -166,6 +176,11 @@ router.post('/debit', async (req, res) => {
     ]);
     broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
     broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
+    
+    // Broadcast transaction
+    const tx = txRes.rows[0];
+    broadcast(req.user.userId, { type: 'transaction', ...tx });
+    broadcast(targetId, { type: 'transaction', ...tx });
     
     res.json({ success: true });
   } catch {
