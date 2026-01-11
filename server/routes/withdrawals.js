@@ -50,7 +50,7 @@ router.post('/', requireRole('super_admin', 'admin', 'sub_admin'), async (req, r
       return res.status(403).json({ error: 'not_authorized' });
     }
     
-    if (target.balance < parsedAmount) {
+    if (Number(target.balance) < parsedAmount) {
       await client.query('ROLLBACK');
       return res.status(400).json({ error: 'insufficient_balance' });
     }
@@ -110,12 +110,12 @@ router.post('/:id/approve', async (req, res) => {
       return res.status(400).json({ error: 'request_expired' });
     }
     
-    // Check balance
+    // Check balance (convert to numbers for proper comparison)
     const balRes = await client.query(
       'SELECT balance FROM profiles WHERE id = $1 FOR UPDATE',
       [wr.target_user_id]
     );
-    if (balRes.rows[0].balance < wr.amount) {
+    if (Number(balRes.rows[0].balance) < Number(wr.amount)) {
       await client.query('ROLLBACK');
       return res.status(400).json({ error: 'insufficient_balance' });
     }

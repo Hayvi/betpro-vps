@@ -49,7 +49,7 @@ router.post('/transfer', async (req, res) => {
     // Check sender balance (skip for super_admin/admin)
     if (!isUnlimitedSender) {
       const senderRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [req.user.userId]);
-      if (senderRes.rows[0].balance < parsedAmount) {
+      if (Number(senderRes.rows[0].balance) < parsedAmount) {
         await client.query('ROLLBACK');
         return res.status(400).json({ error: 'insufficient_balance' });
       }
@@ -163,7 +163,7 @@ router.post('/debit', requireRole('super_admin', 'admin'), async (req, res) => {
       return res.status(400).json({ error: 'invalid_target' });
     }
     
-    if (targetRes.rows[0].balance < parsedAmount) {
+    if (Number(targetRes.rows[0].balance) < parsedAmount) {
       await client.query('ROLLBACK');
       return res.status(400).json({ error: 'insufficient_balance' });
     }
