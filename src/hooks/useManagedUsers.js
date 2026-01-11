@@ -22,11 +22,18 @@ export function useManagedUsers() {
   useEffect(() => {
     if (!userId) return;
 
-    const unsub = onWsMessage('users_update', () => {
+    const unsub1 = onWsMessage('users_update', () => {
+      refreshManagedUsers();
+    });
+    
+    const unsub2 = onWsMessage('withdrawal_approved', () => {
       refreshManagedUsers();
     });
 
-    return unsub;
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [userId, refreshManagedUsers]);
 
   return {
