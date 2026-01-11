@@ -263,8 +263,6 @@ export default function AdminDashboard() {
     <div className="dash-page" dir={isRtl ? 'rtl' : 'ltr'}>
       <DashboardHeader title={t('dash_admin_title')} username={username} role={role} />
 
-      <DashboardMetricsStrip items={metrics} />
-
       <div className="dash-grid-1">
         <WalletSummaryCard
           title={t('dash_admin_walletTitle')}

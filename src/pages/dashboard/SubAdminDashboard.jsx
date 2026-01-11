@@ -204,8 +204,6 @@ export default function SubAdminDashboard() {
     <div className="dash-page" dir={isRtl ? 'rtl' : 'ltr'}>
       <DashboardHeader title={t('dash_sub_title')} username={username} role={role} />
 
-      <DashboardMetricsStrip items={metrics} />
-
       <WalletSummaryCard
         title={t('dash_sub_walletTitle')}
         loading={loadingBalance}
