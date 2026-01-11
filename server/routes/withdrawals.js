@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { query, pool } from '../config/db.js';
 import { authMiddleware, requireRole } from '../middleware/auth.js';
+import { broadcast } from '../services/websocket.js';
 
 const router = Router();
 router.use(authMiddleware);
 
+// Check if caller can manage target user
+async function canManageUser(callerId, callerRole, targetUserId) {
+  if (callerRole === 'super_admin') return true;
+  const res = await query('SELECT created_by FROM profiles WHERE id = $1', [targetUserId]);
+  return res.rows[0]?.created_by === callerId;
+}
+
 // Create withdrawal request
-router.post('/', async (req, res) => {
+router.post('/', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   const { targetUsername, amount } = req.body;
   const parsedAmount = Number(amount);
   
@@ -20,7 +28,7 @@ router.post('/', async (req, res) => {
     
     // Find target user
     const targetRes = await client.query(
-      'SELECT id, balance FROM profiles WHERE username = $1',
+      'SELECT id, balance, created_by FROM profiles WHERE username = $1 AND is_active = true',
       [targetUsername]
     );
     if (!targetRes.rows[0]) {
@@ -29,6 +37,19 @@ router.post('/', async (req, res) => {
     }
     
     const target = targetRes.rows[0];
+    
+    // Cannot request from self
+    if (target.id === req.user.userId) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'invalid_target' });
+    }
+    
+    // Sub-admin can only request from users they created
+    if (req.user.role === 'sub_admin' && target.created_by !== req.user.userId) {
+      await client.query('ROLLBACK');
+      return res.status(403).json({ error: 'not_authorized' });
+    }
+    
     if (target.balance < parsedAmount) {
       await client.query('ROLLBACK');
       return res.status(400).json({ error: 'insufficient_balance' });
@@ -42,6 +63,10 @@ router.post('/', async (req, res) => {
     );
     
     await client.query('COMMIT');
+    
+    // Notify target user
+    broadcast(target.id, { type: 'withdrawal_request', request: result.rows[0] });
+    
     res.json({ data: result.rows[0] });
   } catch {
     await client.query('ROLLBACK');
@@ -51,8 +76,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Approve withdrawal
-router.post('/:id/approve', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
+// Approve withdrawal - ONLY target user can approve
+router.post('/:id/approve', async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -67,6 +92,23 @@ router.post('/:id/approve', requireRole('super_admin', 'admin', 'sub_admin'), as
     }
     
     const wr = reqRes.rows[0];
+    
+    // Only target user can approve
+    if (wr.target_user_id !== req.user.userId) {
+      await client.query('ROLLBACK');
+      return res.status(403).json({ error: 'not_authorized' });
+    }
+    
+    // Check if expired (1 hour)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    if (new Date(wr.created_at) < oneHourAgo) {
+      await client.query(
+        "UPDATE withdrawal_requests SET status = 'expired' WHERE id = $1",
+        [req.params.id]
+      );
+      await client.query('COMMIT');
+      return res.status(400).json({ error: 'request_expired' });
+    }
     
     // Check balance
     const balRes = await client.query(
@@ -86,7 +128,23 @@ router.post('/:id/approve', requireRole('super_admin', 'admin', 'sub_admin'), as
       ['approved', req.user.userId, req.params.id]
     );
     
+    // Record transaction
+    await client.query(
+      'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4)',
+      [wr.target_user_id, wr.requester_id, wr.amount, 'debit']
+    );
+    
     await client.query('COMMIT');
+    
+    // Broadcast balance updates
+    const [targetBal, requesterBal] = await Promise.all([
+      client.query('SELECT balance FROM profiles WHERE id = $1', [wr.target_user_id]),
+      client.query('SELECT balance FROM profiles WHERE id = $1', [wr.requester_id])
+    ]);
+    broadcast(wr.target_user_id, { type: 'balance_update', balance: targetBal.rows[0].balance });
+    broadcast(wr.requester_id, { type: 'balance_update', balance: requesterBal.rows[0].balance });
+    broadcast(wr.requester_id, { type: 'withdrawal_approved', requestId: req.params.id });
+    
     res.json({ data: { success: true } });
   } catch {
     await client.query('ROLLBACK');
@@ -96,29 +154,48 @@ router.post('/:id/approve', requireRole('super_admin', 'admin', 'sub_admin'), as
   }
 });
 
-// Reject withdrawal
-router.post('/:id/reject', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
+// Reject withdrawal - ONLY target user can reject
+router.post('/:id/reject', async (req, res) => {
   try {
+    // Get request first to check ownership
+    const reqRes = await query(
+      'SELECT * FROM withdrawal_requests WHERE id = $1 AND status = $2',
+      [req.params.id, 'pending']
+    );
+    if (!reqRes.rows[0]) {
+      return res.status(404).json({ error: 'request_not_found' });
+    }
+    
+    // Only target user can reject
+    if (reqRes.rows[0].target_user_id !== req.user.userId) {
+      return res.status(403).json({ error: 'not_authorized' });
+    }
+    
     const result = await query(
       `UPDATE withdrawal_requests SET status = 'rejected', approved_by = $1, approved_at = NOW()
-       WHERE id = $2 AND status = 'pending' RETURNING *`,
+       WHERE id = $2 RETURNING *`,
       [req.user.userId, req.params.id]
     );
-    if (!result.rows[0]) return res.status(404).json({ error: 'request_not_found' });
+    
+    // Notify requester
+    broadcast(reqRes.rows[0].requester_id, { type: 'withdrawal_rejected', requestId: req.params.id });
+    
     res.json({ data: { success: true } });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
   }
 });
 
-// Get pending requests (for approvers)
-router.get('/pending', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
+// Get pending requests FOR ME to approve (I'm the target)
+router.get('/pending', async (req, res) => {
   try {
     const result = await query(
-      `SELECT wr.*, p.username as target_username 
+      `SELECT wr.*, p.username as requester_username 
        FROM withdrawal_requests wr
-       JOIN profiles p ON p.id = wr.target_user_id
-       WHERE wr.status = 'pending' ORDER BY wr.created_at DESC`
+       JOIN profiles p ON p.id = wr.requester_id
+       WHERE wr.target_user_id = $1 AND wr.status = 'pending' 
+       ORDER BY wr.created_at DESC`,
+      [req.user.userId]
     );
     res.json({ requests: result.rows });
   } catch {
