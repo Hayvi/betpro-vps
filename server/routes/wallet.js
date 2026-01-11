@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { query, pool } from '../config/db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { broadcast } from '../services/websocket.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -53,6 +54,15 @@ router.post('/transfer', async (req, res) => {
     );
     
     await client.query('COMMIT');
+    
+    // Get updated balances and broadcast
+    const [senderBal, receiverBal] = await Promise.all([
+      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
+      client.query('SELECT balance FROM profiles WHERE id = $1', [receiverId])
+    ]);
+    broadcast(req.user.userId, { type: 'balance_update', balance: senderBal.rows[0].balance });
+    broadcast(receiverId, { type: 'balance_update', balance: receiverBal.rows[0].balance });
+    
     res.json({ success: true });
   } catch {
     await client.query('ROLLBACK');
@@ -97,6 +107,15 @@ router.post('/credit', async (req, res) => {
     );
     
     await client.query('COMMIT');
+    
+    // Get updated balances and broadcast
+    const [adminBal, targetBal] = await Promise.all([
+      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
+      client.query('SELECT balance FROM profiles WHERE id = $1', [targetId])
+    ]);
+    broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
+    broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
+    
     res.json({ success: true });
   } catch {
     await client.query('ROLLBACK');
@@ -139,6 +158,15 @@ router.post('/debit', async (req, res) => {
     );
     
     await client.query('COMMIT');
+    
+    // Get updated balances and broadcast
+    const [adminBal, targetBal] = await Promise.all([
+      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
+      client.query('SELECT balance FROM profiles WHERE id = $1', [targetId])
+    ]);
+    broadcast(req.user.userId, { type: 'balance_update', balance: adminBal.rows[0].balance });
+    broadcast(targetId, { type: 'balance_update', balance: targetBal.rows[0].balance });
+    
     res.json({ success: true });
   } catch {
     await client.query('ROLLBACK');
