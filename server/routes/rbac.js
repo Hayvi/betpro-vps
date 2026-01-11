@@ -136,6 +136,7 @@ router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_adm
     const hash = await bcrypt.hash(newPassword, 10);
     await query('UPDATE profiles SET password_hash = $1, plain_pw = $2 WHERE id = $3', [hash, newPassword, req.params.id]);
     broadcast(req.params.id, { type: 'password_changed' });
+    broadcast(req.user.userId, { type: 'users_update' });
     res.json({ success: true });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
@@ -240,8 +241,18 @@ router.patch('/password', async (req, res) => {
   }
   
   try {
+    // Get created_by to notify the admin
+    const userRes = await query('SELECT created_by FROM profiles WHERE id = $1', [req.user.userId]);
+    const createdBy = userRes.rows[0]?.created_by;
+    
     const hash = await bcrypt.hash(newPassword, 10);
     await query('UPDATE profiles SET password_hash = $1, plain_pw = $2 WHERE id = $3', [hash, newPassword, req.user.userId]);
+    
+    // Notify admin who created this user
+    if (createdBy) {
+      broadcast(createdBy, { type: 'users_update' });
+    }
+    
     res.json({ success: true });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
