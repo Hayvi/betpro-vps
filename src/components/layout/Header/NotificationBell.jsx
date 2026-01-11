@@ -183,6 +183,7 @@ export function NotificationBell() {
 
           <NotificationsSection
             notifications={notifications}
+            withdrawalRequests={withdrawalRequests}
             isDark={isDark}
             cn={cn}
             formatAmount={formatAmount}
@@ -319,6 +320,7 @@ function SentRequestsSection({
 
 function NotificationsSection({
   notifications,
+  withdrawalRequests,
   isDark,
   cn,
   formatAmount,
