@@ -89,9 +89,17 @@ router.post('/end', async (req, res) => {
   }
 });
 
-// Get active sessions for a user (admin)
+// Get active sessions for a user (admin) - must be able to manage user
 router.get('/user/:userId', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   try {
+    // Check if caller can view this user's presence
+    if (req.user.role !== 'super_admin') {
+      const userRes = await query('SELECT created_by FROM profiles WHERE id = $1', [req.params.userId]);
+      if (!userRes.rows[0] || userRes.rows[0].created_by !== req.user.userId) {
+        return res.status(403).json({ error: 'not_authorized' });
+      }
+    }
+    
     const result = await query(
       `SELECT * FROM presence_sessions 
        WHERE user_id = $1 AND ended_at IS NULL 
@@ -104,8 +112,8 @@ router.get('/user/:userId', requireRole('super_admin', 'admin', 'sub_admin'), as
   }
 });
 
-// Get all active sessions (super admin dashboard)
-router.get('/active', requireRole('super_admin', 'admin'), async (req, res) => {
+// Get all active sessions (super admin only)
+router.get('/active', requireRole('super_admin'), async (req, res) => {
   try {
     const result = await query(
       `SELECT ps.*, p.username 

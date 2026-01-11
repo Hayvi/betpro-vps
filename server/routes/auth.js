@@ -5,8 +5,50 @@ import { query } from '../config/db.js';
 
 const router = Router();
 
+// Simple rate limiting for login attempts
+const loginAttempts = new Map();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const attempts = loginAttempts.get(ip);
+  
+  if (!attempts) return true;
+  
+  // Clean up old entries
+  if (now - attempts.firstAttempt > LOCKOUT_TIME) {
+    loginAttempts.delete(ip);
+    return true;
+  }
+  
+  return attempts.count < MAX_ATTEMPTS;
+}
+
+function recordAttempt(ip, success) {
+  const now = Date.now();
+  
+  if (success) {
+    loginAttempts.delete(ip);
+    return;
+  }
+  
+  const attempts = loginAttempts.get(ip);
+  if (!attempts) {
+    loginAttempts.set(ip, { count: 1, firstAttempt: now });
+  } else {
+    attempts.count++;
+  }
+}
+
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+  
+  // Check rate limit
+  if (!checkRateLimit(ip)) {
+    return res.status(429).json({ error: 'too_many_attempts' });
+  }
   
   try {
     const result = await query(
@@ -16,13 +58,17 @@ router.post('/login', async (req, res) => {
     
     const user = result.rows[0];
     if (!user || !user.is_active) {
+      recordAttempt(ip, false);
       return res.status(401).json({ error: 'invalid_credentials' });
     }
     
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
+      recordAttempt(ip, false);
       return res.status(401).json({ error: 'invalid_credentials' });
     }
+    
+    recordAttempt(ip, true);
     
     const token = jwt.sign(
       { userId: user.id, role: user.role },

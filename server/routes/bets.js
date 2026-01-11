@@ -8,29 +8,44 @@ const router = Router();
 router.post('/place', authMiddleware, async (req, res) => {
   const { stake, bets, accumulatorOdds, potentialWin, promoCode } = req.body;
   const userId = req.user.userId;
+  
+  // Validate input
+  const parsedStake = Number(stake);
+  if (!parsedStake || parsedStake < 1) {
+    return res.status(400).json({ error: 'invalid_stake' });
+  }
+  if (!Array.isArray(bets) || bets.length === 0) {
+    return res.status(400).json({ error: 'invalid_bets' });
+  }
+  
   const client = await pool.connect();
   
   try {
     await client.query('BEGIN');
     
-    // Get balance
-    const balRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [userId]);
-    const balance = balRes.rows[0]?.balance || 0;
+    // Get balance and check user is active
+    const balRes = await client.query('SELECT balance, is_active FROM profiles WHERE id = $1 FOR UPDATE', [userId]);
+    if (!balRes.rows[0] || !balRes.rows[0].is_active) {
+      await client.query('ROLLBACK');
+      return res.status(403).json({ error: 'account_inactive' });
+    }
     
-    if (balance < stake) {
+    const balance = balRes.rows[0].balance || 0;
+    
+    if (balance < parsedStake) {
       await client.query('ROLLBACK');
       return res.status(400).json({ error: 'insufficient_balance' });
     }
     
     // Deduct balance
-    const newBalance = balance - stake;
+    const newBalance = balance - parsedStake;
     await client.query('UPDATE profiles SET balance = $1 WHERE id = $2', [newBalance, userId]);
     
     // Create bet slip
     const slipRes = await client.query(
       `INSERT INTO bet_slips (user_id, total_stake, accumulator_odds, potential_win, promo_code, status)
        VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING *`,
-      [userId, stake, accumulatorOdds, potentialWin, promoCode || null]
+      [userId, parsedStake, accumulatorOdds, potentialWin, promoCode || null]
     );
     
     // Create individual bets
@@ -38,7 +53,7 @@ router.post('/place', authMiddleware, async (req, res) => {
       await client.query(
         `INSERT INTO bets (user_id, match_id, bet_type, odds, stake, potential_win, status)
          VALUES ($1, $2, $3, $4, $5, $6, 'pending')`,
-        [userId, bet.matchId, bet.betType, bet.odds, stake / bets.length, (stake / bets.length) * bet.odds]
+        [userId, bet.matchId, bet.betType, bet.odds, parsedStake / bets.length, (parsedStake / bets.length) * bet.odds]
       );
     }
     
