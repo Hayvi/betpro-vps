@@ -21,7 +21,7 @@ export function useUserWallet() {
 
   const refreshTransactions = async () => {
     setLoadingTx(true);
-    const { transactions: tx, error: txError } = await fetchMyTransactions(MAX_TRANSACTIONS);
+    const { transactions: tx, error: txError } = await fetchMyTransactions(1, MAX_TRANSACTIONS);
     if (!txError) setTransactions(tx || []);
     setLoadingTx(false);
   };
