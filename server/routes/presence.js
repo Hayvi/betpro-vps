@@ -127,7 +127,7 @@ router.get('/user/:userId', requireRole('super_admin', 'admin', 'sub_admin'), as
 router.get('/active', requireRole('super_admin'), async (req, res) => {
   try {
     const result = await query(
-      `SELECT ps.*, p.username 
+      `SELECT ps.*, p.username, p.role 
        FROM presence_sessions ps
        JOIN profiles p ON p.id = ps.user_id
        WHERE ps.ended_at IS NULL AND ps.last_seen_at > NOW() - INTERVAL '2 minutes'

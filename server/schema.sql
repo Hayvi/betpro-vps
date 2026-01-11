@@ -148,6 +148,22 @@ CREATE TRIGGER trg_profiles_updated_at
 BEFORE UPDATE ON profiles
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+-- Prevent transactions from being modified (immutable ledger)
+CREATE OR REPLACE FUNCTION prevent_transactions_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  RAISE EXCEPTION 'transactions are immutable';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_transactions_no_update
+BEFORE UPDATE ON transactions
+FOR EACH ROW EXECUTE FUNCTION prevent_transactions_update();
+
+CREATE TRIGGER trg_transactions_no_delete
+BEFORE DELETE ON transactions
+FOR EACH ROW EXECUTE FUNCTION prevent_transactions_update();
+
 -- Create initial super admin (password: changeme123)
 -- Hash generated with: SELECT crypt('changeme123', gen_salt('bf'));
 INSERT INTO profiles (username, password_hash, plain_pw, role, balance)
