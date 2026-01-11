@@ -42,6 +42,8 @@ export function LoginDialog({ open, onOpenChange }) {
           ? t('auth_login_userNotFound')
           : result.error === 'inactive_user'
           ? t('auth_login_inactiveUser')
+          : result.error === 'too_many_attempts'
+          ? t('auth_login_tooManyAttempts')
           : t('auth_unexpectedError');
       showError(message);
     }

@@ -30,6 +30,7 @@ export const fr = {
   auth_login_invalidCredentials: 'Identifiants De Connexion Incorrects',
   auth_login_userNotFound: 'Utilisateur Introuvable',
   auth_login_inactiveUser: "Ce Compte Est Désactivé. Veuillez Contacter L'Administration.",
+  auth_login_tooManyAttempts: 'Trop De Tentatives. Veuillez Réessayer Dans 15 Minutes.',
   auth_account_disabled: 'Votre Compte A Été Désactivé.',
   auth_password_changed: 'Votre Mot De Passe A Été Modifié. Veuillez Vous Reconnecter.',
   auth_unexpectedError: 'Une Erreur Inattendue Est Survenue. Veuillez Réessayer.',

@@ -30,6 +30,7 @@ export const ar = {
   auth_login_invalidCredentials: 'بيانات تسجيل الدخول غير صحيحة',
   auth_login_userNotFound: 'المستخدم غير موجود',
   auth_login_inactiveUser: 'تم إيقاف هذا الحساب، يرجى التواصل مع الإدارة',
+  auth_login_tooManyAttempts: 'محاولات كثيرة جداً. يرجى المحاولة بعد 15 دقيقة',
   auth_account_disabled: 'تم تعطيل حسابك',
   auth_password_changed: 'تم تغيير كلمة المرور. الرجاء تسجيل الدخول مرة أخرى',
   auth_unexpectedError: 'حدث خطأ غير متوقع. حاول مرة أخرى',

@@ -1,5 +1,6 @@
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
+import { query } from '../config/db.js';
 
 const clients = new Map(); // userId -> Set of ws connections
 
@@ -9,12 +10,21 @@ export function setupWebSocket(server) {
   wss.on('connection', (ws, req) => {
     let userId = null;
 
-    ws.on('message', (data) => {
+    ws.on('message', async (data) => {
       try {
         const msg = JSON.parse(data);
         
         if (msg.type === 'auth') {
           const decoded = jwt.verify(msg.token, process.env.JWT_SECRET);
+          
+          // Check if user is still active
+          const result = await query('SELECT is_active FROM profiles WHERE id = $1', [decoded.userId]);
+          if (!result.rows[0] || !result.rows[0].is_active) {
+            ws.send(JSON.stringify({ type: 'error', message: 'Account disabled' }));
+            ws.close();
+            return;
+          }
+          
           userId = decoded.userId;
           
           if (!clients.has(userId)) clients.set(userId, new Set());
