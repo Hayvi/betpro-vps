@@ -44,7 +44,7 @@ CREATE TABLE withdrawal_requests (
   requester_id UUID NOT NULL REFERENCES profiles(id),
   target_user_id UUID NOT NULL REFERENCES profiles(id),
   amount NUMERIC(12,2) NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'expired')),
   approved_by UUID REFERENCES profiles(id),
   approved_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()

@@ -42,7 +42,7 @@ export function useNotificationCenter() {
         .filter(
           (t) =>
             t.receiver_id === userId &&
-            (t.type === 'transfer' || t.type === 'admin_credit')
+            (t.type === 'transfer' || t.type === 'credit')
         )
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
