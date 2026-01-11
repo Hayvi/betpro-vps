@@ -26,27 +26,32 @@ router.post('/transfer', async (req, res) => {
     return res.status(400).json({ error: 'invalid_amount' });
   }
   
+  const isUnlimitedSender = ['super_admin', 'admin'].includes(req.user.role);
+  
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
     
     // Get receiver
-    const recvRes = await client.query('SELECT id FROM profiles WHERE username = $1', [receiverUsername]);
+    const recvRes = await client.query('SELECT id FROM profiles WHERE username = $1 AND is_active = true', [receiverUsername]);
     if (!recvRes.rows[0]) {
       await client.query('ROLLBACK');
       return res.status(404).json({ error: 'user_not_found' });
     }
     const receiverId = recvRes.rows[0].id;
     
-    // Check sender balance
-    const senderRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [req.user.userId]);
-    if (senderRes.rows[0].balance < parsedAmount) {
-      await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'insufficient_balance' });
+    // Check sender balance (skip for super_admin/admin)
+    if (!isUnlimitedSender) {
+      const senderRes = await client.query('SELECT balance FROM profiles WHERE id = $1 FOR UPDATE', [req.user.userId]);
+      if (senderRes.rows[0].balance < parsedAmount) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'insufficient_balance' });
+      }
+      // Deduct from sender
+      await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, req.user.userId]);
     }
     
-    // Transfer
-    await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [parsedAmount, req.user.userId]);
+    // Add to receiver
     await client.query('UPDATE profiles SET balance = balance + $1 WHERE id = $2', [parsedAmount, receiverId]);
     const txRes = await client.query(
       'INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -56,12 +61,13 @@ router.post('/transfer', async (req, res) => {
     await client.query('COMMIT');
     
     // Get updated balances and broadcast
-    const [senderBal, receiverBal] = await Promise.all([
-      client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]),
-      client.query('SELECT balance FROM profiles WHERE id = $1', [receiverId])
-    ]);
-    broadcast(req.user.userId, { type: 'balance_update', balance: senderBal.rows[0].balance });
+    const receiverBal = await client.query('SELECT balance FROM profiles WHERE id = $1', [receiverId]);
     broadcast(receiverId, { type: 'balance_update', balance: receiverBal.rows[0].balance });
+    
+    if (!isUnlimitedSender) {
+      const senderBal = await client.query('SELECT balance FROM profiles WHERE id = $1', [req.user.userId]);
+      broadcast(req.user.userId, { type: 'balance_update', balance: senderBal.rows[0].balance });
+    }
     
     // Broadcast transaction to both parties
     const tx = txRes.rows[0];

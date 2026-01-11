@@ -5,6 +5,21 @@ import { authMiddleware, requireRole } from '../middleware/auth.js';
 import { broadcast } from '../services/websocket.js';
 import { nanoid } from 'nanoid';
 
+// Role hierarchy helper
+function canCreateRole(creatorRole, targetRole) {
+  if (creatorRole === 'super_admin' && ['admin', 'sub_admin', 'user'].includes(targetRole)) return true;
+  if (creatorRole === 'admin' && ['sub_admin', 'user'].includes(targetRole)) return true;
+  if (creatorRole === 'sub_admin' && targetRole === 'user') return true;
+  return false;
+}
+
+// Check if caller can manage target user
+async function canManageUser(callerId, callerRole, targetUserId) {
+  if (callerRole === 'super_admin') return true;
+  const res = await query('SELECT created_by FROM profiles WHERE id = $1', [targetUserId]);
+  return res.rows[0]?.created_by === callerId;
+}
+
 const router = Router();
 router.use(authMiddleware);
 
@@ -67,6 +82,12 @@ router.get('/users/inactive', requireRole('super_admin', 'admin', 'sub_admin'), 
 // Create user account
 router.post('/users', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   const { targetRole } = req.body;
+  
+  // Validate role hierarchy
+  if (!canCreateRole(req.user.role, targetRole)) {
+    return res.status(403).json({ error: 'invalid_role' });
+  }
+  
   const username = nanoid(8);
   const password = nanoid(12);
   
@@ -92,6 +113,11 @@ router.post('/users', requireRole('super_admin', 'admin', 'sub_admin'), async (r
 router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
   const { newPassword } = req.body;
   
+  // Check ownership
+  if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
+    return res.status(403).json({ error: 'not_authorized' });
+  }
+  
   try {
     const hash = await bcrypt.hash(newPassword, 10);
     await query('UPDATE profiles SET password_hash = $1, plain_pw = $2 WHERE id = $3', [hash, newPassword, req.params.id]);
@@ -104,6 +130,11 @@ router.patch('/users/:id/password', requireRole('super_admin', 'admin', 'sub_adm
 
 // Restore user account
 router.patch('/users/:id/restore', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
+  // Check ownership
+  if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
+    return res.status(403).json({ error: 'not_authorized' });
+  }
+  
   try {
     await query('UPDATE profiles SET is_active = true WHERE id = $1', [req.params.id]);
     broadcast(req.user.userId, { type: 'users_update' });
@@ -115,6 +146,11 @@ router.patch('/users/:id/restore', requireRole('super_admin', 'admin', 'sub_admi
 
 // Delete (soft) user account
 router.delete('/users/:id', requireRole('super_admin', 'admin', 'sub_admin'), async (req, res) => {
+  // Check ownership
+  if (!await canManageUser(req.user.userId, req.user.role, req.params.id)) {
+    return res.status(403).json({ error: 'not_authorized' });
+  }
+  
   try {
     await query('UPDATE profiles SET is_active = false WHERE id = $1', [req.params.id]);
     broadcast(req.params.id, { type: 'account_disabled' });
@@ -163,9 +199,14 @@ router.get('/transactions', async (req, res) => {
 router.patch('/password', async (req, res) => {
   const { newPassword } = req.body;
   
+  // Validate password length
+  if (!newPassword || newPassword.length < 8) {
+    return res.status(400).json({ error: 'invalid_password' });
+  }
+  
   try {
     const hash = await bcrypt.hash(newPassword, 10);
-    await query('UPDATE profiles SET password_hash = $1 WHERE id = $2', [hash, req.user.userId]);
+    await query('UPDATE profiles SET password_hash = $1, plain_pw = $2 WHERE id = $3', [hash, newPassword, req.user.userId]);
     res.json({ success: true });
   } catch {
     res.status(500).json({ error: 'unexpected_error' });
