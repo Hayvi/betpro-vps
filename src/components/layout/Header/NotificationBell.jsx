@@ -337,11 +337,11 @@ function NotificationsSection({
         {t('notifications_title')}
       </div>
 
-      {notifications.length === 0 ? (
+      {notifications.length === 0 && withdrawalRequests.length === 0 ? (
         <div className="px-3 py-3 text-xs text-slate-500 text-right">
           {t('notifications_empty')}
         </div>
-      ) : (
+      ) : notifications.length === 0 ? null : (
         <div className="max-h-72 overflow-y-auto">
           {notifications.slice(0, 10).map((n) => {
             const senderName = senderNames[n.sender_id] || t('header_userFallback');
