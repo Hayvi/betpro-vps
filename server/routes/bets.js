@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { query, pool } from '../config/db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { broadcast } from '../services/websocket.js';
 
 const router = Router();
 
@@ -22,7 +23,8 @@ router.post('/place', authMiddleware, async (req, res) => {
     }
     
     // Deduct balance
-    await client.query('UPDATE profiles SET balance = balance - $1 WHERE id = $2', [stake, userId]);
+    const newBalance = balance - stake;
+    await client.query('UPDATE profiles SET balance = $1 WHERE id = $2', [newBalance, userId]);
     
     // Create bet slip
     const slipRes = await client.query(
@@ -41,7 +43,11 @@ router.post('/place', authMiddleware, async (req, res) => {
     }
     
     await client.query('COMMIT');
-    res.json({ ...slipRes.rows[0], newBalance: balance - stake });
+    
+    // Broadcast balance update
+    broadcast(userId, { type: 'balance_update', balance: newBalance });
+    
+    res.json({ ...slipRes.rows[0], newBalance });
   } catch (err) {
     await client.query('ROLLBACK');
     res.status(500).json({ error: 'Server error' });

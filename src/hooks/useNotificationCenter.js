@@ -57,22 +57,37 @@ export function useNotificationCenter() {
     // Listen for transaction updates via WebSocket
     const unsubTransaction = onWsMessage('transaction', (tx) => {
       if (cancelled) return;
-      if (tx.receiver_id === userId && ['transfer', 'admin_credit'].includes(tx.type)) {
+      if (tx.receiver_id === userId && ['transfer', 'admin_credit', 'credit'].includes(tx.type)) {
         setNotifications((prev) => {
           const existing = prev.find((p) => p.id === tx.id);
           if (existing) return prev;
           return [tx, ...prev].slice(0, 50);
         });
       }
-      if (tx.type === 'admin_debit') {
-        loadWithdrawalRequests();
-        loadSentRequests();
-      }
+    });
+    
+    // Listen for withdrawal request events
+    const unsubWithdrawalRequest = onWsMessage('withdrawal_request', () => {
+      if (cancelled) return;
+      loadWithdrawalRequests();
+    });
+    
+    const unsubWithdrawalApproved = onWsMessage('withdrawal_approved', () => {
+      if (cancelled) return;
+      loadSentRequests();
+    });
+    
+    const unsubWithdrawalRejected = onWsMessage('withdrawal_rejected', () => {
+      if (cancelled) return;
+      loadSentRequests();
     });
 
     return () => {
       cancelled = true;
       unsubTransaction();
+      unsubWithdrawalRequest();
+      unsubWithdrawalApproved();
+      unsubWithdrawalRejected();
     };
   }, [isAuthenticated, userId]);
 
