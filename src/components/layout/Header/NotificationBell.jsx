@@ -357,18 +357,45 @@ function NotificationsSection({
       ) : notifications.length === 0 ? null : (
         <div className="max-h-72 overflow-y-auto">
           {notifications.slice(0, 10).map((n) => {
-            const senderName = senderNames[n.sender_id] || t('header_userFallback');
             const createdAt = n.created_at ? new Date(n.created_at) : null;
-            const dateStr = createdAt
-              ? createdAt.toLocaleDateString(locale)
-              : '';
-            const timeStr = createdAt
-              ? createdAt.toLocaleTimeString(locale, {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-              : '';
+            const dateStr = createdAt ? createdAt.toLocaleDateString(locale) : '';
+            const timeStr = createdAt ? createdAt.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : '';
 
+            // Withdrawal response notification
+            if (n.type === 'withdrawal_approved' || n.type === 'withdrawal_rejected') {
+              const isApproved = n.type === 'withdrawal_approved';
+              return (
+                <div
+                  key={n.id}
+                  className={cn(
+                    'px-3 py-2 border-b last:border-b-0 text-xs',
+                    isDark ? 'border-slate-800' : 'border-slate-100',
+                    isApproved ? (isDark ? 'bg-emerald-900/20' : 'bg-emerald-50') : (isDark ? 'bg-red-900/20' : 'bg-red-50')
+                  )}
+                >
+                  <div className="space-y-1 w-full">
+                    <div className={cn('font-semibold text-right', isApproved ? 'text-emerald-500' : 'text-red-500')}>
+                      {isApproved ? t('notifications_withdrawalApproved') : t('notifications_withdrawalRejected')}
+                    </div>
+                    <div className="text-xs text-right">
+                      {t('notifications_amountLabel')}{' '}
+                      <span className={cn('font-bold', isApproved ? 'text-emerald-500' : 'text-red-500')}>
+                        {formatAmount(n.amount)} {t('wallet_currencyCode')}
+                      </span>
+                    </div>
+                    <div className="text-xs text-right">
+                      {t('notifications_targetLabel')} <span className="font-bold">{n.target_username}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 text-right">
+                      {timeStr && dateStr ? `${timeStr} | ${dateStr}` : ''}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // Transaction notification
+            const senderName = senderNames[n.sender_id] || t('header_userFallback');
             return (
               <div
                 key={n.id}

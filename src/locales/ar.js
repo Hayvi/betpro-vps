@@ -58,6 +58,9 @@ export const ar = {
   notifications_status_approved: 'تمت الموافقة',
   notifications_status_rejected: 'مرفوض',
   notifications_status_expired: 'منتهي الصلاحية',
+  notifications_withdrawalApproved: 'تمت الموافقة على السحب',
+  notifications_withdrawalRejected: 'تم رفض السحب',
+  notifications_targetLabel: 'من:',
 
   // Navigation
   nav_home: 'الرئيسية',

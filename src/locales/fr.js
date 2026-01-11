@@ -58,6 +58,9 @@ export const fr = {
   notifications_status_approved: 'Approuvée',
   notifications_status_rejected: 'Refusée',
   notifications_status_expired: 'Expirée',
+  notifications_withdrawalApproved: 'Retrait Approuvé',
+  notifications_withdrawalRejected: 'Retrait Refusé',
+  notifications_targetLabel: 'De:',
 
   // Navigation
   nav_home: 'Accueil',

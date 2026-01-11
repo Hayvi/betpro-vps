@@ -17,6 +17,7 @@ export function useNotificationCenter() {
   const [notifications, setNotifications] = useState([]);
   const [withdrawalRequests, setWithdrawalRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
+  const [resolvedWithdrawals, setResolvedWithdrawals] = useState([]);
   const [senderNames, setSenderNames] = useState({});
   const [processingId, setProcessingId] = useState(null);
 
@@ -28,6 +29,18 @@ export function useNotificationCenter() {
   const loadSentRequests = async () => {
     const { requests } = await fetchSentWithdrawalRequests();
     setSentRequests(requests || []);
+    // Add recently resolved requests to notifications
+    const resolved = (requests || []).filter(r => 
+      (r.status === 'approved' || r.status === 'rejected') &&
+      r.approved_at && new Date(r.approved_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+    ).map(r => ({
+      id: `wr_${r.id}`,
+      type: r.status === 'approved' ? 'withdrawal_approved' : 'withdrawal_rejected',
+      amount: r.amount,
+      target_username: r.target_username,
+      created_at: r.approved_at,
+    }));
+    setResolvedWithdrawals(resolved);
   };
 
   useEffect(() => {
@@ -129,9 +142,15 @@ export function useNotificationCenter() {
     loadSentRequests();
   };
 
+  // Combine transaction notifications with resolved withdrawals
+  const allNotifications = [
+    ...resolvedWithdrawals,
+    ...notifications
+  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
   return {
     isAuthenticated,
-    notifications,
+    notifications: allNotifications,
     withdrawalRequests,
     sentRequests,
     senderNames,
