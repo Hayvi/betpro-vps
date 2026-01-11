@@ -255,6 +255,7 @@ export function useSuperDashboard() {
 
     const unsubUsers = onWsMessage('users_update', () => {
       refreshManagedUsers();
+      refreshInactiveUsers();
     });
 
     const unsubTransaction = onWsMessage('transaction', () => {
@@ -266,12 +267,17 @@ export function useSuperDashboard() {
       refreshTransactions();
     });
 
+    const unsubWithdrawalRejected = onWsMessage('withdrawal_rejected', () => {
+      refreshTransactions();
+    });
+
     return () => {
       cancelled = true;
       unsubBalance();
       unsubUsers();
       unsubTransaction();
       unsubWithdrawalApproved();
+      unsubWithdrawalRejected();
     };
   }, [updateUserBalance]);
 
