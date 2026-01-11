@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { query, pool } from '../config/db.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, requireRole } from '../middleware/auth.js';
 import { broadcast } from '../services/websocket.js';
 
 const router = Router();
@@ -78,7 +78,7 @@ router.post('/transfer', async (req, res) => {
 });
 
 // Credit user balance (admin) - creates money, no balance check for admin
-router.post('/credit', async (req, res) => {
+router.post('/credit', requireRole('super_admin', 'admin'), async (req, res) => {
   const { targetUsername, amount } = req.body;
   const parsedAmount = Number(amount);
   
@@ -125,7 +125,7 @@ router.post('/credit', async (req, res) => {
 });
 
 // Debit user balance (admin) - takes money from user, destroys it (no add to admin)
-router.post('/debit', async (req, res) => {
+router.post('/debit', requireRole('super_admin', 'admin'), async (req, res) => {
   const { targetUsername, amount } = req.body;
   const parsedAmount = Number(amount);
   
