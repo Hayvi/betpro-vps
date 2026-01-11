@@ -48,7 +48,7 @@ export function useNotificationCenter() {
     let cancelled = false;
 
     async function loadInitial() {
-      const { transactions, error } = await fetchMyTransactions(50);
+      const { transactions, error } = await fetchMyTransactions(1, 50);
       if (error || cancelled || !transactions) return;
 
       const incoming = transactions

@@ -157,9 +157,8 @@ export function useSuperDashboard() {
 
   const refreshTransactions = async () => {
     setLoadingTx(true);
-    const { transactions: tx, error: txError } = await fetchMyTransactions(50);
+    const { transactions: tx, error: txError } = await fetchMyTransactions(1, 50);
     if (!txError && tx) {
-      // Sort transactions by created_at before setting
       const sortedTx = [...tx].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       setTransactions(sortedTx);
     }

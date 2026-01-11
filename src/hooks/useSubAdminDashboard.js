@@ -64,7 +64,7 @@ export function useSubAdminDashboard() {
 
   const refreshTransactions = async () => {
     setLoadingTx(true);
-    const { transactions: tx, error: txError } = await fetchMyTransactions(50);
+    const { transactions: tx, error: txError } = await fetchMyTransactions(1, 50);
     if (!txError) setTransactions(tx || []);
     setLoadingTx(false);
   };
@@ -78,7 +78,7 @@ export function useSubAdminDashboard() {
 
       const [balanceRes, txRes] = await Promise.allSettled([
         fetchMyBalance(),
-        fetchMyTransactions(50),
+        fetchMyTransactions(1, 50),
       ]);
 
       if (cancelled) return;
