@@ -328,7 +328,7 @@ export default function SuperDashboard() {
         />
       )}
 
-      <div className="dash-grid-2">
+      <div className="dash-grid-1">
         <WalletSummaryCard
           title={t('dash_super_walletTitle')}
           loading={loadingBalance}
@@ -708,7 +708,7 @@ export default function SuperDashboard() {
         <PasswordChangeSection collapseKey="dash:collapsed:super:password_change" />
       </LazySection>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-1">
         <StyledCard>
           <div className="flex items-center justify-between mb-6">
             <h2 className="dash-section-title">{t('dash_deletedUsersTitle')}</h2>

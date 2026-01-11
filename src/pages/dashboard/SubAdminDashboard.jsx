@@ -415,7 +415,7 @@ export default function SubAdminDashboard() {
       {/* Password Change Section */}
       <PasswordChangeSection collapseKey="dash:collapsed:sub_admin:password_change" />
 
-      <div className="dash-grid-2">
+      <div className="dash-grid-1">
         {/* Create User Form */}
         <div ref={createUserSectionRef}>
           <StyledCard>

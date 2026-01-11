@@ -307,6 +307,10 @@
     @apply grid gap-6 md:grid-cols-2;
   }
 
+  .dash-grid-1 {
+    @apply grid gap-6 md:grid-cols-1;
+  }
+
   .dash-section-header {
     @apply flex items-center justify-between mb-6;
   }

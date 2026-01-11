@@ -265,7 +265,7 @@ export default function AdminDashboard() {
 
       <DashboardMetricsStrip items={metrics} />
 
-      <div className="dash-grid-2">
+      <div className="dash-grid-1">
         <WalletSummaryCard
           title={t('dash_admin_walletTitle')}
           loading={loadingBalance}
@@ -613,7 +613,7 @@ export default function AdminDashboard() {
       {/* Password Change Section */}
       <PasswordChangeSection collapseKey="dash:collapsed:admin:password_change" />
 
-      <div className="dash-grid-2">
+      <div className="dash-grid-1">
         <div ref={createUserSectionRef}>
           <StyledCard>
             <div className="dash-section-header">
